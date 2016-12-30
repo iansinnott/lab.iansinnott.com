@@ -2,9 +2,23 @@ mono = Consolas, 'Liberation Mono', Menlo, Courier, monospace
 helvetica = 'Helvetica Neue', Helvetica, Arial, sans-serif
 black = #333
 main = #1C2855
+timing = 0.2s
+easing = ease-in-out
 
 // Use with inputs / buttons you don't want users to interact with
 uninteractive()
   user-select none
   pointer-events none
   cursor not-allowed
+
+btn()
+  color main
+  background white
+  padding 10px
+  text-decoration none
+  appearance none
+  outline none
+  transition all timing easing
+  &:hover
+    color white
+    background main

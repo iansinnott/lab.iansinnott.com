@@ -1,4 +1,4 @@
-@require '../lib/vars.styl'
+@require './vars.styl'
 
 *
   box-sizing border-box
@@ -74,24 +74,8 @@ pre
   .active
     background black
 
-timing = 0.2s
-easing = ease-in-out
-
-btn()
-  color main
-  background white
-  padding 10px
-  text-decoration none
-  appearance none
-  outline none
-  transition all timing easing
-  &:hover
-    color white
-    background main
-
 .cta
   btn()
-
 
 .NotFound
   text-align center
