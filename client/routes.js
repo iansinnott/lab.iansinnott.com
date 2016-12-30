@@ -10,7 +10,6 @@ const makeTitle = str => str ? `Alg Viz | ${str}` : 'Alg Viz';
 export const routes = (
   <Route path='/' component={App}>
     <IndexRoute title={makeTitle()} component={Home} />
-    <Route path='about' title={makeTitle('About')} component={About} />
 
     <Route path='algs'>
       <IndexRoute title={makeTitle('Algorithms')} component={AlgIndex} />
@@ -21,6 +20,7 @@ export const routes = (
       />
     </Route>
 
+    <Route path='about' title={makeTitle('About')} component={About} />
     <Route path='*' title='404: Not Found' component={NotFound} />
   </Route>
 );

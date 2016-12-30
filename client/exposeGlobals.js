@@ -5,5 +5,6 @@
 export default function exposeGlobals(_global) {
   Object.assign(_global, {
     d3: require('d3'),
+    _: require('ramda'),
   });
 }

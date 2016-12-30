@@ -1,6 +1,8 @@
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { Link, IndexLink } from 'react-router';
 import classnames from 'classnames/bind';
+import { compose, curry } from 'ramda';
 
 // Using CSS Modules so we assign the styles to a variable
 import s from './App.styl';
@@ -18,20 +20,77 @@ const IndexNavLink = props => (
   <IndexLink activeClassName={cx('active')} {...props} />
 );
 
+/**
+ * Create an SVG with the appropriate namespace attached
+ */
+const Svg = (props) => (
+  <svg xmlns='http://www.w3.org/2000/svg' {...props} />
+);
+
+/**
+ * Render a transparent SVG grid which can be used as a repeatable pattern to
+ * create a graph-paper-like effect on any background.
+ */
+class SvgGrid extends React.Component {
+  static defaultProps = {
+    opacity: 0.4,
+  };
+
+  static propTypes = {
+    opacity: React.PropTypes.number.isRequired,
+  };
+
+  render() {
+    const { opacity } = this.props;
+    const innerGridColor = `rgba(255,255,255,${opacity / 2})`;
+    const outerGridColor = `rgba(255,255,255,${opacity})`;
+    return (
+      <Svg width={100} height={100}>
+        <rect width={100} height={100} fill='none' />
+        <g fill={innerGridColor}>
+          <rect width={100} height={1} y={20} />
+          <rect width={100} height={1} y={40} />
+          <rect width={100} height={1} y={60} />
+          <rect width={100} height={1} y={80} />
+          <rect width={1} height={100} x={20} />
+          <rect width={1} height={100} x={40} />
+          <rect width={1} height={100} x={60} />
+          <rect width={1} height={100} x={80} />
+        </g>
+        <rect
+          width={100}
+          height={100}
+          fill='none'
+          strokeWidth={1}
+          stroke={outerGridColor}
+        />
+      </Svg>
+    );
+  }
+}
+
+const prependDataUri = curry((mediaType, src) => `data:${mediaType},${src}`);
+
+const renderToDataUri = compose(
+  prependDataUri('image/svg+xml'),
+  encodeURIComponent,
+  renderToStaticMarkup,
+);
+
+const renderToDataUrl = compose(str => `url("${str}")`, renderToDataUri);
+
 export class Home extends React.Component {
   render() {
     return (
       <div className={cx('page')}>
         <div className={cx('siteTitle')}>
           <img src={logo} alt='React Logo' />
-          <h1>React Static Boilerplate</h1>
+          <h1>Alg Viz</h1>
         </div>
-        <p>Why React static?</p>
-        <ul>
-          <li><span className={s.hl}>Dev</span> friendly</li>
-          <li><span className={cx('hl')}>User</span> friendly</li>
-          <li><span className={cx('hl')}>SEO</span> friendly</li>
-        </ul>
+        <p>A project to visually explain practical programming algorithms.</p>
+        <Link to='/algs' className={cx('cta')}>
+          View Algorithms
+        </Link>
       </div>
     );
   }
@@ -53,8 +112,13 @@ export class About extends React.Component {
 export class NotFound extends React.Component {
   render() {
     return (
-      <div className={cx('page')}>
-        <h4>Not found</h4>
+      <div className={cx('page', 'NotFound')}>
+        <h1>Not Found...</h1>
+        <p>(╭ರ_•́)</p>
+        <Link to='/'>
+          <i style={{ marginRight: 10 }} className='fa fa-long-arrow-left'></i>
+          Back Home
+        </Link>
       </div>
     );
   }
@@ -71,7 +135,9 @@ export class App extends React.Component {
   }
   render() {
     return (
-      <div className={cx('App')}>
+      <div
+        className={cx('App')}
+        style={{ backgroundImage: renderToDataUrl(<SvgGrid opacity={0.2} />) }}>
         <nav className={cx('nav')}>
           <IndexNavLink to='/'>Home</IndexNavLink>
           <NavLink to='/algs'>Algorithms</NavLink>

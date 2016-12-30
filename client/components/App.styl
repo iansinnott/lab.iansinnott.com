@@ -3,8 +3,14 @@
 *
   box-sizing border-box
 
+html
 body
-  background react-blue
+  height 100%
+:global #root
+  height 100%
+
+body
+  background main
   font-family helvetica
   color darken(white, 10%)
   font-size 18px
@@ -38,20 +44,19 @@ pre
       display block
       margin 0 auto
 
-.hl
-  font-weight bold
-  color react-blue
 .App
   background black
   min-width 320px
+  height 100%
 
   h1
-    color react-blue
+    color white
     font-weight 300
     font-size 52px
 
   p
     color white
+    margin-bottom 20px
 
 .nav
   background darken(black, 10%)
@@ -69,3 +74,24 @@ pre
   .active
     background black
 
+timing = 0.2s
+easing = ease-in-out
+
+btn()
+  color main
+  background white
+  padding 10px
+  text-decoration none
+  appearance none
+  outline none
+  transition all timing easing
+  &:hover
+    color white
+    background main
+
+.cta
+  btn()
+
+
+.NotFound
+  text-align center
