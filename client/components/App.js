@@ -10,6 +10,14 @@ import logo from './react-logo.png';
 // Favicon link is in the template, this just makes webpack package it up for us
 import './favicon.ico';
 
+const NavLink = props => (
+  <Link activeClassName={cx('active')} {...props} />
+);
+
+const IndexNavLink = props => (
+  <IndexLink activeClassName={cx('active')} {...props} />
+);
+
 export class Home extends React.Component {
   render() {
     return (
@@ -65,8 +73,9 @@ export class App extends React.Component {
     return (
       <div className={cx('App')}>
         <nav className={cx('nav')}>
-          <IndexLink to='/' activeClassName={cx('active')}>Home</IndexLink>
-          <Link to='/about' activeClassName={cx('active')}>About</Link>
+          <IndexNavLink to='/'>Home</IndexNavLink>
+          <NavLink to='/algs'>Algorithms</NavLink>
+          <NavLink to='/about'>About</NavLink>
         </nav>
         {this.props.children}
       </div>
