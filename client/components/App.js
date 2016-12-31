@@ -1,13 +1,12 @@
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { Link, IndexLink } from 'react-router';
 import classnames from 'classnames/bind';
-import { compose, curry } from 'ramda';
 
 // Using CSS Modules so we assign the styles to a variable
 import s from './App.styl';
 const cx = classnames.bind(s);
 import logo from './react-logo.png';
+import { Svg, renderToDataUrl } from '../utils/svgHelpers.js';
 
 // Favicon link is in the template, this just makes webpack package it up for us
 import './favicon.ico';
@@ -18,13 +17,6 @@ const NavLink = props => (
 
 const IndexNavLink = props => (
   <IndexLink activeClassName={cx('active')} {...props} />
-);
-
-/**
- * Create an SVG with the appropriate namespace attached
- */
-const Svg = (props) => (
-  <svg xmlns='http://www.w3.org/2000/svg' {...props} />
 );
 
 /**
@@ -68,16 +60,6 @@ class SvgGrid extends React.Component {
     );
   }
 }
-
-const prependDataUri = curry((mediaType, src) => `data:${mediaType},${src}`);
-
-const renderToDataUri = compose(
-  prependDataUri('image/svg+xml'),
-  encodeURIComponent,
-  renderToStaticMarkup,
-);
-
-const renderToDataUrl = compose(str => `url("${str}")`, renderToDataUri);
 
 export class Home extends React.Component {
   render() {
