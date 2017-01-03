@@ -132,27 +132,29 @@ export default class InsertionSort extends React.Component {
   start = () => {
     if (this.sub) this.sub.unsubscribe();
 
-    const swap = (_arr, a, b) => {
-      if (a === b) return _arr;
+    const swap = (arr, a, b) => {
+      if (a === b) return arr;
 
-      const arr = _arr.slice(); // Immutable
-      const _tmp = arr[a];
+      const tmp = arr[a];
       arr[a] = arr[b];
-      arr[b] = _tmp;
-      return arr;
+      arr[b] = tmp;
     };
 
-    let sortedData = this.state.data.slice();
-    let swaps = quicksort(this.state.data.slice());
-    let obs = Observable.from(swaps)
-      .mergeMap((x, i) => Observable.of(x).delay(100 * i));
+    // Quicksort mutates data so we make copies
+    let data = this.state.data.slice();
 
-    this.sub = obs.subscribe(([a, b]) => {
-      sortedData = swap(sortedData, a, b);
-      this.setState({
-        data: sortedData,
+    // Sort the data to generate the operations needed to sort it which we can
+    // then animate.
+    let swaps = quicksort(data.slice());
+
+    this.sub = Observable.from(swaps)
+      .mergeMap((x, i) => Observable.of(x).delay(100 * i))
+      .subscribe(([a, b]) => {
+        swap(data, a, b);
+        this.setState({
+          data,
+        });
       });
-    });
   };
 
   render() {
