@@ -6,6 +6,7 @@ export default function exposeGlobals(_global) {
   Object.assign(_global, {
     _: require('ramda'),
     d3: require('d3'),
+    rx: require('rxjs'),
     debug: require('debug'),
   });
 }

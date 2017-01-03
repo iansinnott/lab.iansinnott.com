@@ -1,5 +1,6 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
+import { Observable } from 'rxjs';
 import * as d3 from 'd3';
 import classnames from 'classnames/bind';
 import createDebugger from 'debug';
@@ -54,20 +55,23 @@ function quicksort(array) {
 // Try not to use `this` in here so that it can be easily refactored later.
 // svg: D3$Selection
 const renderSvg = (svg, props) => {
-  const { width, height, data, swaps, xScale, angleScale, margin } = props;
+  const { height, data, xScale, angleScale, margin } = props;
 
+  // NOTE: The units are crucial here since we are applying this as a CSS
+  // attribute. If we were using the SVG transform attribute the units would not
+  // matter, but they are very important when using CSS + SVG
   const transform = (d, i) => {
-    return `translate(${xScale(i)},${height})rotate(${angleScale(d)})`;
+    return `translate(${xScale(i)}px,${height}px)rotate(${angleScale(d)}deg)`;
   };
 
   // We use a data join for the group to be declarative in our rendering. Since
   // the data is always the same we can call renderSvg repeatedly and it will
   // only render the group the first time
-  const group = svg.selectAll('.lines').data([null]);
+  const group = svg.selectAll(`.${cx('lines')}`).data([null]);
 
   const line = group
     .enter().append('g') // Enter <g>
-      .attr('class', 'lines')
+      .attr('class', cx('lines'))
       .attr('transform', `translate(${margin.left},${margin.top})`)
     .merge(group)
 
@@ -83,13 +87,9 @@ const renderSvg = (svg, props) => {
       .enter().append('line')
         .attr('y2', -height) // See NOTE
         .attr('stroke', 'white')
-        .attr('transform', transform);
-
-  // NOTE: Although the transform logic is duplicate, we do not us a merge
-  // because we do not want to transition entering data
-  line // Update lines
-    .transition().duration(2000)
-    .attr('transform', transform);
+        .style('transition-duration', '100ms')
+      .merge(line)
+        .style('transform', transform);
 };
 
 class Viz extends React.Component {
@@ -103,12 +103,11 @@ class Viz extends React.Component {
     const { data } = props;
 
     const n = data.length;
-    const swaps = quicksort(data.slice()).reverse(); // Hm... what is this?
     const width = 600;
     const height = 40;
     const margin = {
-      left: 20,
-      right: 20,
+      left: 40,
+      right: 40,
       top: 80,
       bottom: 80,
     };
@@ -126,7 +125,6 @@ class Viz extends React.Component {
 
     this.svgProps = {
       ...props,
-      swaps,
       width,
       height,
       outerWidth,
@@ -153,12 +151,6 @@ class Viz extends React.Component {
     return false;
   }
 
-  // Just for debugging
-  forceShuffle() {
-    d3.shuffle(this.svgProps.data); // Mutative >:(
-    this.svg.call(renderSvg, this.svgProps);
-  }
-
   render() {
     const { outerWidth, outerHeight } = this.svgProps;
     return (
@@ -172,9 +164,40 @@ export default class InsertionSort extends React.Component {
     data: d3.shuffle(d3.range(200)),
   };
 
-  shuffle = () => {
+  componentWillUnmount() {
+    if (this.sub) this.sub.unsubscribe();
+  }
+
+  reset = () => {
+    if (this.sub) this.sub.unsubscribe();
     this.setState({
       data: d3.shuffle(d3.range(200)),
+    });
+  };
+
+  start = () => {
+    if (this.sub) this.sub.unsubscribe();
+
+    const swap = (_arr, a, b) => {
+      if (a === b) return _arr;
+
+      const arr = _arr.slice(); // Immutable
+      const _tmp = arr[a];
+      arr[a] = arr[b];
+      arr[b] = _tmp;
+      return arr;
+    };
+
+    let sortedData = this.state.data.slice();
+    let swaps = quicksort(this.state.data.slice());
+    let obs = Observable.from(swaps)
+      .mergeMap((x, i) => Observable.of(x).delay(100 * i));
+
+    this.sub = obs.subscribe(([a, b]) => {
+      sortedData = swap(sortedData, a, b);
+      this.setState({
+        data: sortedData,
+      });
     });
   };
 
@@ -183,7 +206,8 @@ export default class InsertionSort extends React.Component {
       <div className={cx('InsertionSort', 'page')}>
         <h1>InsertionSort</h1>
         <div className={cx('controls')}>
-          <button className={cx('btn')} onClick={this.shuffle}>Re-shuffle</button>
+          <button className={cx('btn')} onClick={this.reset}>Reset</button>
+          <button className={cx('btn')} onClick={this.start}>Start</button>
         </div>
         <div className={cx('vizContainer')}>
           <Viz data={this.state.data} />
