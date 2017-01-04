@@ -12,7 +12,7 @@ export default class AlgIndex extends React.Component {
         <h1>Here be algs</h1>
 
         <div className={cx('list')}>
-          <Link to='/algs/insertion-sort'>Insertion Sort</Link>
+          <Link to='/algs/quick-sort'>Quick Sort</Link>
         </div>
       </div>
     );

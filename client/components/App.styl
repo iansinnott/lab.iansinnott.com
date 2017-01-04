@@ -1,5 +1,7 @@
 @require './vars.styl'
 
+app-bg = #171B23
+
 *
   box-sizing border-box
 
@@ -45,7 +47,7 @@ pre
       margin 0 auto
 
 .App
-  background black
+  background app-bg
   min-width 320px
   height 100%
 
@@ -59,20 +61,24 @@ pre
     margin-bottom 20px
 
 .nav
-  background darken(black, 10%)
+  background #324244
   padding-left 20px
 
   a
     display inline-block
-    padding 20px
+    padding 15px
     text-transform uppercase
     text-decoration none
-    color darken(white, 20%)
+    color accent
+    font-weight 300
+    font-size 14px
     &:hover
       color white
 
   .active
-    background black
+    background #00695c
+    &:hover
+      color accent
 
 .cta
   btn()

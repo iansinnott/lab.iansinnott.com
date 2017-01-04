@@ -6,7 +6,7 @@ import classnames from 'classnames/bind';
 import s from './App.styl';
 const cx = classnames.bind(s);
 import logo from './react-logo.png';
-import { Svg, renderToDataUrl } from '../utils/svgHelpers.js';
+import { Svg } from '../utils/svgHelpers.js';
 
 // Favicon link is in the template, this just makes webpack package it up for us
 import './favicon.ico';
@@ -19,47 +19,16 @@ const IndexNavLink = props => (
   <IndexLink activeClassName={cx('active')} {...props} />
 );
 
-/**
- * Render a transparent SVG grid which can be used as a repeatable pattern to
- * create a graph-paper-like effect on any background.
- */
-class SvgGrid extends React.Component {
-  static defaultProps = {
-    opacity: 0.4,
-  };
-
-  static propTypes = {
-    opacity: React.PropTypes.number.isRequired,
-  };
-
-  render() {
-    const { opacity } = this.props;
-    const innerGridColor = `rgba(255,255,255,${opacity / 2})`;
-    const outerGridColor = `rgba(255,255,255,${opacity})`;
-    return (
-      <Svg width={100} height={100}>
-        <rect width={100} height={100} fill='none' />
-        <g fill={innerGridColor}>
-          <rect width={100} height={1} y={20} />
-          <rect width={100} height={1} y={40} />
-          <rect width={100} height={1} y={60} />
-          <rect width={100} height={1} y={80} />
-          <rect width={1} height={100} x={20} />
-          <rect width={1} height={100} x={40} />
-          <rect width={1} height={100} x={60} />
-          <rect width={1} height={100} x={80} />
-        </g>
-        <rect
-          width={100}
-          height={100}
-          fill='none'
-          strokeWidth={1}
-          stroke={outerGridColor}
-        />
-      </Svg>
-    );
-  }
-}
+// NOTE: This is currently unused but I kept it around as an example
+const SvgGradient = () => (
+  <Svg width='100%' height='100%'>
+    <linearGradient id='g' x2='1' y2='1'>
+      <stop stopColor='#F19' />
+      <stop offset='100%' stopColor='#0CF' />
+    </linearGradient>
+    <rect width='100%' height='100%' fill='url(#g)' />
+  </Svg>
+);
 
 export class Home extends React.Component {
   render() {
@@ -117,13 +86,12 @@ export class App extends React.Component {
   }
   render() {
     return (
-      <div
-        className={cx('App')}
-        style={{ backgroundImage: renderToDataUrl(<SvgGrid opacity={0.2} />) }}>
+      <div className={cx('App')}>
         <nav className={cx('nav')}>
           <IndexNavLink to='/'>Home</IndexNavLink>
           <NavLink to='/algs'>Algorithms</NavLink>
           <NavLink to='/about'>About</NavLink>
+          <NavLink to='/play'>Play</NavLink>
         </nav>
         {this.props.children}
       </div>

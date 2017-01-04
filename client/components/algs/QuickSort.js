@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import classnames from 'classnames/bind';
 import createDebugger from 'debug';
 
-const debug = createDebugger('alg-viz:components:InsertionSort'); // eslint-disable-line no-unused-vars
+const debug = createDebugger('alg-viz:components:QuickSort'); // eslint-disable-line no-unused-vars
 
 import s from './AlgIndex.styl';
 const cx = classnames.bind(s);
@@ -113,7 +113,7 @@ class Viz extends React.Component {
   }
 }
 
-export default class InsertionSort extends React.Component {
+export default class QuickSort extends React.Component {
   state = {
     data: d3.shuffle(d3.range(200)),
   };
@@ -159,8 +159,8 @@ export default class InsertionSort extends React.Component {
 
   render() {
     return (
-      <div className={cx('InsertionSort', 'page')}>
-        <h1>InsertionSort</h1>
+      <div className={cx('QuickSort', 'page')}>
+        <h1>QuickSort</h1>
         <div className={cx('controls')}>
           <button className={cx('btn')} onClick={this.reset}>Reset</button>
           <button className={cx('btn')} onClick={this.start}>Start</button>
