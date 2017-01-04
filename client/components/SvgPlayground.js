@@ -85,6 +85,25 @@ export default class Playground extends React.Component {
             className={cx('shape')}
           />
         </Box>
+
+        <Box title='circle'>
+          <circle
+            cx={100}
+            cy={100}
+            r={50}
+            className={cx('shape')}
+          />
+        </Box>
+
+        <Box title='path'>
+          <rect
+            x={10}
+            y={20}
+            width={100}
+            height={50}
+            className={cx('shape')}
+          />
+        </Box>
       </div>
     );
   }

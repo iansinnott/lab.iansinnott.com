@@ -93,7 +93,9 @@ export class App extends React.Component {
           <NavLink to='/about'>About</NavLink>
           <NavLink to='/play'>Play</NavLink>
         </nav>
-        {this.props.children}
+        <div className={cx('routeHandler')}>
+          {this.props.children}
+        </div>
       </div>
     );
   }
