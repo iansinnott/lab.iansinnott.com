@@ -40,13 +40,28 @@ btn()
   border-color rgba(10, 12, 14, 0.8)
   box-shadow 0 1px 1px rgba(10, 12, 14, 0.8)
   color #f5f8fa
+  &:active
+    box-shadow none
+
+btn-small()
+  padding 0 10px
+  font-size 14px
+  min-width 30px
+  min-height 30px
+  line-height 28px
 
 btn-gray()
   background linear-gradient(to bottom, rgba(16, 22, 26, 0.1), rgba(16, 22, 26, 0.2)) left no-repeat, center no-repeat rgba(255, 255, 255, 0.1)
   &:hover
     background linear-gradient(to bottom, lighten(rgba(16, 22, 26, 0.1), 5%), lighten(rgba(16, 22, 26, 0.2), 5%)) left no-repeat, center no-repeat rgba(255, 255, 255, 0.13)
+  &:active
+    background-image none
+    background-color rgba(16, 22, 26, 0.1)
 
 btn-green()
   background linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)) left no-repeat, center no-repeat #0f9960
   &:hover
     background-color #0d8050
+  &:active
+    background-image none
+    background-color #0a6640

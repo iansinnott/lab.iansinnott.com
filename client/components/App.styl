@@ -12,7 +12,7 @@ body
   height 100%
 
 body
-  background main
+  background app-bg
   font-family system
   color darken(white, 10%)
   font-size 18px
@@ -50,6 +50,8 @@ pre
   background app-bg
   min-width 320px
   height 100%
+  display flex
+  flex-direction column
 
   h1
     color #90a4ae
@@ -63,6 +65,8 @@ pre
 .nav
   background #324244
   padding-left 20px
+  flex-grow 0
+  flex-shrink 0
 
   a
     display inline-block
@@ -77,8 +81,11 @@ pre
 
   .active
     background #00695c
-    &:hover
-      color accent
+    color white
+
+.routeHandler
+  flex 1 100%
+  overflow auto
 
 .cta
   btn()
