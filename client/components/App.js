@@ -78,8 +78,9 @@ export class App extends React.Component {
         <nav className={cx('nav')}>
           <IndexNavLink to='/'>Home</IndexNavLink>
           <NavLink to='/algs'>Algorithms</NavLink>
-          <NavLink to='/about'>About</NavLink>
           <NavLink to='/play'>Play</NavLink>
+          <NavLink style={{ textTransform: 'none' }} to='/fp'>λ</NavLink>
+          <NavLink to='/about'>About</NavLink>
         </nav>
         <div className={cx('routeHandler')}>
           {this.props.children}

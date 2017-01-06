@@ -1,0 +1,50 @@
+@require './vars.styl'
+
+.page
+  padding 20px
+
+@keyframes flicker-border
+  from
+    border-color transparentify(white, 0.4)
+  60%
+    border-color transparentify(white, 0.1)
+  64%
+    border-color transparentify(white, 0.7)
+    box-shadow 0 0 15px 2px white
+  67%
+    border-color transparentify(white, 0.3)
+  70%
+    border-color transparentify(white, 1.0)
+    box-shadow 0 0 15px 2px white
+  to
+    border-color transparentify(white, 0.4)
+
+.FpSigil
+  display flex
+  position relative
+  align-items center
+  justify-content center
+  text-align center
+  font-size 5rem
+  font-weight 300
+  height 7.5rem
+  width @height
+  line-height @height
+  margin 0 auto
+  vertical-align middle
+
+  &:before
+    content ''
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    background transparent
+    border 6px solid
+    border-color transparentify(white, 0.4)
+    border-radius 50%
+    box-shadow none
+    animation-name flicker-border
+    animation-duration 1.4s
+    animation-direction alternate
