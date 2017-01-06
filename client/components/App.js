@@ -6,7 +6,6 @@ import classnames from 'classnames/bind';
 import s from './App.styl';
 const cx = classnames.bind(s);
 import logo from './react-logo.png';
-import { Svg } from '../utils/svgHelpers.js';
 
 // Favicon link is in the template, this just makes webpack package it up for us
 import './favicon.ico';
@@ -17,17 +16,6 @@ const NavLink = props => (
 
 const IndexNavLink = props => (
   <IndexLink activeClassName={cx('active')} {...props} />
-);
-
-// NOTE: This is currently unused but I kept it around as an example
-const SvgGradient = () => (
-  <Svg width='100%' height='100%'>
-    <linearGradient id='g' x2='1' y2='1'>
-      <stop stopColor='#F19' />
-      <stop offset='100%' stopColor='#0CF' />
-    </linearGradient>
-    <rect width='100%' height='100%' fill='url(#g)' />
-  </Svg>
 );
 
 export class Home extends React.Component {

@@ -9,56 +9,8 @@ svg-bg = lighten(#171B23, 5%)
     background svg-bg
     box-shadow 0px 8px 30px rgba(0,0,0,0.2)
 
-.Box
-  h4
-    color #58bec7
-    font-weight 300
-
 .shape
   fill accent
 
 purple = #C44FD8
 
-.btn
-  btn()
-  btn-gray()
-  btn-small()
-  &:hover
-    i
-      color purple
-
-.disabled
-  uninteractive()
-  btn-disabled()
-
-.Select
-  display inline-block
-  position relative
-  align-items center
-  &:hover
-    i
-      color purple
-
-  i
-    color transparentify(#f5f8fa, 0.8)
-    vertical-align middle
-    font-size 1em
-    tween all quick
-
-  i:last-child
-    position absolute
-    top 50%
-    right 10px
-    transform translateY(-50%)
-
-.sel
-  sel()
-  btn-gray()
-
-.upper
-  display flex
-  align-items center
-  justify-content space-between
-
-.control
-  margin-left 10px
