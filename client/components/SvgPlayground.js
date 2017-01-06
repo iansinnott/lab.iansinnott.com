@@ -1,10 +1,12 @@
 import React from 'react';
 import classnames from 'classnames/bind';
 import { range } from 'ramda';
+import * as easings from 'd3-ease';
 
 import s from './SvgPlayground.styl';
 const cx = classnames.bind(s);
 import { Svg, renderToDataUrl } from '../utils/svgHelpers.js';
+import createTweenObservable from '../utils/createTweenObservable.js'
 
 
 /**
@@ -84,6 +86,12 @@ class Box extends React.Component {
   }
 }
 
+const renderEasingOptions = (easings) => {
+  return Object.keys(easings).map(k => (
+    <option key={k} value={k}>{k}</option>
+  ));
+};
+
 class TweenBox extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
@@ -96,25 +104,94 @@ class TweenBox extends React.Component {
       React.PropTypes.number.isRequired,
       React.PropTypes.string.isRequired,
     ]),
+    from: React.PropTypes.number.isRequired,
+    to: React.PropTypes.number.isRequired,
+    duration: React.PropTypes.number.isRequired,
+    defaultEasing: React.PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     width: '100%',
     height: 200,
+    from: 0,
+    to: 1,
+    duration: 1200,
+    defaultEasing: 'easeBackOut',
   }
 
   state = {
     t: 0,
+    started: false,
+    complete: false,
+    easing: this.props.defaultEasing,
+  };
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  /**
+   * A safe unsubscribe, in case there isn't an active subscription
+   */
+  unsubscribe = () => {
+    this.sub && this.sub.unsubscribe();
+  };
+
+  start = () => {
+    this.unsubscribe();
+
+    const { from, to, duration } = this.props;
+    const { easing } = this.state;
+
+    this.setState({ started: true, complete: false });
+    this.sub = createTweenObservable({
+      from,
+      to,
+      duration,
+      interval: 10,
+      ease: easings[easing],
+    }).subscribe(
+      t => this.setState({ t }),
+      null, // Omit error handler
+      () => this.setState({ complete: true }),
+    );
+  };
+
+  reset = () => {
+    this.unsubscribe();
+    this.setState({ t: 0, started: false, complete: false });
+  };
+
+  handleEasing = (e) => {
+    this.setState({ easing: e.target.value }, this.start);
   };
 
   render() {
+    const { started, complete } = this.state;
     return (
       <section className={cx('Box')}>
-        <h4>{this.props.title}</h4>
-        <button className={cx('btn')} onClick={this.start}>
-          <i className='fa fa-play'></i>
-          Start
-        </button>
+        <div className={cx('upper')}>
+          <h4>{this.props.title}</h4>
+          <div className={cx('controls')}>
+            <button className={cx('btn')} onClick={this.start}>
+              <i className='fa fa-play-circle'></i>
+              {started ? 'Restart' : 'Start'}
+            </button>
+            <button className={cx('btn', 'control', { disabled: !complete })} onClick={this.reset}>
+              <i className='fa fa-repeat'></i>
+              Reset
+            </button>
+            <div className={cx('Select', 'control')}>
+              <select
+                className={cx('sel')}
+                value={this.state.easing}
+                onChange={this.handleEasing}>
+                {renderEasingOptions(easings)}
+              </select>
+              <i className='fa fa-angle-down'></i>
+            </div>
+          </div>
+        </div>
         <Svg
           width={this.props.width}
           height={this.props.height}
