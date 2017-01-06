@@ -1,12 +1,37 @@
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 import classnames from 'classnames/bind';
-import { range } from 'ramda';
+import { range, compose, map } from 'ramda';
 
 import s from './SvgPlayground.styl';
 const cx = classnames.bind(s);
 import { Box, TweenBox } from './Svg.js';
 
+const renderRandomDots = (range, width = 500, height = 200) => {
+  const rangeToCircles = map(compose(
+    ([ x, y, i ]) => (
+      <circle
+        key={i}
+        r={Math.ceil(Math.random() * 30)}
+        fillOpacity={(1/i > .3) ? (1/i) : .5}
+        transform={`translate(${x},${y})`}
+      />
+    ),
+    (i) => [ width * Math.random(), height * Math.random(), i ]
+  ));
+
+  return rangeToCircles(range);
+};
+
 export default class Playground extends React.Component {
+  state = {
+    width: 0,
+  };
+
+  componentDidMount() {
+    this.setState({ width: findDOMNode(this).clientWidth - 40 }); // Save width and strip padding
+  }
+
   render() {
     return (
       <div className={cx('Playground')}>
@@ -121,6 +146,12 @@ export default class Playground extends React.Component {
             </g>
           )}
         </TweenBox>
+
+        <Box title='dots'>
+          <g className={cx('shape')}>
+            {renderRandomDots(range(0,100), this.state.width)}
+          </g>
+        </Box>
       </div>
     );
   }
