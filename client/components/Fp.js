@@ -94,16 +94,32 @@ class YouTubeSearch extends React.Component {
   }
 }
 
-const nullableRandom = (threshold: number = 0.3) => {
-  return (Math.random() < threshold) ? null : Math.random();
-};
+class Maybe {
+  static of = (x) => new Maybe(x);
 
-const throwableRandom = (threshold: number = 0.3) => {
-  if (Math.random() < threshold) {
-    throw new Error('A random error occurred');
+  constructor(x) {
+    this.value = x;
   }
 
-  return Math.random();
+  isNothing() {
+    return this.value === null || this.value === undefined;
+  }
+
+  map(f) {
+    if (this.isNothing()) {
+      return Maybe.of(null);
+    } else {
+      return Maybe.of(f(this.value));
+    }
+  }
+
+  toString() {
+    return `Maybe(${this.isNothing() ? 'null' : this.value.toString()})`;
+  }
+}
+
+const nullableRandom = (threshold: number = 0.3) => {
+  return (Math.random() < threshold) ? null : Math.random();
 };
 
 class NullableRandom extends React.Component {
@@ -131,6 +147,70 @@ class NullableRandom extends React.Component {
   }
 }
 
+window.Maybe = Maybe;
+
+class MaybeNullableRandom extends React.Component {
+  state = {
+    value: Maybe.of(0),
+  };
+
+  randomize = () => {
+    this.setState({ value: Maybe.of(nullableRandom()) });
+  }
+
+  render() {
+    const { value } = this.state;
+    return (
+      <Card className={cx({ ohYes: value.isNothing() })}>
+        <h4><code>Maybe</code> Nullable Random</h4>
+        <button onClick={this.randomize} className={cx('btn')}>
+          Randomize!
+        </button>
+        <div className={cx('value')}>
+          <code>{value.toString()}</code>
+        </div>
+      </Card>
+    );
+  }
+}
+
+const throwableRandom = (threshold: number = 0.3) => {
+  if (Math.random() < threshold) {
+    throw new Error('A random error occurred');
+  }
+
+  return Math.random();
+};
+
+class ThrowableRandom extends React.Component {
+  state = {
+    value: 0,
+  };
+
+  randomize = () => {
+    try {
+      this.setState({ value: throwableRandom() });
+    } catch (err) {
+      this.setState({ value: err });
+    }
+  }
+
+  render() {
+    const { value } = this.state;
+    return (
+      <Card className={cx({ ohNo: (value instanceof Error) })}>
+        <h4>Throwable Random</h4>
+        <button onClick={this.randomize} className={cx('btn')}>
+          Randomize!
+        </button>
+        <div className={cx('value')}>
+          <code>{value.toString()}</code>
+        </div>
+      </Card>
+    );
+  }
+}
+
 export default class Fp extends React.Component {
   render() {
     return (
@@ -142,6 +222,8 @@ export default class Fp extends React.Component {
         <section className={cx('cards')}>
           <YouTubeSearch />
           <NullableRandom />
+          <MaybeNullableRandom />
+          <ThrowableRandom />
         </section>
       </div>
     );

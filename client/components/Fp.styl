@@ -57,6 +57,7 @@
 .cards
   display flex
   justify-content space-between
+  flex-wrap wrap
 
 danger()
   background-color rgba(219, 55, 55, 0.25)
@@ -67,9 +68,19 @@ danger()
   h4
     color #f55656
 
+success()
+  background-color rgba(15, 153, 96, 0.25)
+
+  h1
+  h2
+  h3
+  h4
+    color #0f9960
+
 .Card
   width calc(50% - 5px)
   padding 10px
+  margin-bottom 10px
   background #273042
   box-shadow 0 0 0 1px rgba(16, 22, 26, 0.4)
   border 1px solid #111
@@ -91,3 +102,5 @@ danger()
 
   &.ohNo
     danger()
+  &.ohYes
+    success()
