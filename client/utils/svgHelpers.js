@@ -1,3 +1,4 @@
+/* @flow */
 import { renderToStaticMarkup } from 'react-dom/server';
 import { compose, curry } from 'ramda';
 

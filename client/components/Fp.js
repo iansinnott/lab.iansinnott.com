@@ -94,6 +94,43 @@ class YouTubeSearch extends React.Component {
   }
 }
 
+const nullableRandom = (threshold: number = 0.3) => {
+  return (Math.random() < threshold) ? null : Math.random();
+};
+
+const throwableRandom = (threshold: number = 0.3) => {
+  if (Math.random() < threshold) {
+    throw new Error('A random error occurred');
+  }
+
+  return Math.random();
+};
+
+class NullableRandom extends React.Component {
+  state = {
+    value: 0,
+  };
+
+  randomize = () => {
+    this.setState({ value: nullableRandom() });
+  }
+
+  render() {
+    const { value } = this.state;
+    return (
+      <Card className={cx({ ohNo: value === null })}>
+        <h4>Nullable Random</h4>
+        <button onClick={this.randomize} className={cx('btn')}>
+          Randomize!
+        </button>
+        <div className={cx('value')}>
+          <code>{value === null ? 'null' : value}</code>
+        </div>
+      </Card>
+    );
+  }
+}
+
 export default class Fp extends React.Component {
   render() {
     return (
@@ -104,6 +141,7 @@ export default class Fp extends React.Component {
         <p>Welcome to the Fp page...</p>
         <section className={cx('cards')}>
           <YouTubeSearch />
+          <NullableRandom />
         </section>
       </div>
     );

@@ -1,8 +1,10 @@
 /**
  * Generally _global will only ever be the window object, but I made it as a
  * function just in case.
+ *
+ * @flow
  */
-export default function exposeGlobals(_global) {
+export default function exposeGlobals(_global: Object) {
   Object.assign(_global, {
     _: require('ramda'),
     d3: require('d3'),

@@ -1,5 +1,7 @@
+/* @flow weak */
 import React from 'react';
 import * as easings from 'd3-ease';
+import type { Subscription } from 'rxjs';
 
 import { renderToDataUrl } from '../utils/svgHelpers.js';
 import createTweenObservable from '../utils/createTweenObservable.js';
@@ -135,6 +137,8 @@ export class TweenBox extends React.Component {
     duration: 1200,
     defaultEasing: 'easeBackOut',
   }
+
+  sub: ?Subscription;
 
   state = {
     t: 0,

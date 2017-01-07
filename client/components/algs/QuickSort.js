@@ -1,8 +1,10 @@
+/* @flow */
 import React from 'react';
 import { Observable } from 'rxjs';
 import * as d3 from 'd3';
 import classnames from 'classnames/bind';
 import createDebugger from 'debug';
+import type { Subscription } from 'rxjs';
 
 const debug = createDebugger('alg-viz:components:QuickSort'); // eslint-disable-line no-unused-vars
 
@@ -56,6 +58,10 @@ class Viz extends React.Component {
     width: React.PropTypes.number.isRequired,
     height: React.PropTypes.number.isRequired,
   };
+
+  xScale: any;
+
+  angleScale: any;
 
   constructor(props) {
     super(props);
@@ -114,6 +120,8 @@ class Viz extends React.Component {
 }
 
 export default class QuickSort extends React.Component {
+  sub: ?Subscription;
+
   state = {
     data: d3.shuffle(d3.range(200)),
   };

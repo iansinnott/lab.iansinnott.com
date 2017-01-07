@@ -3,6 +3,11 @@
 .page
   padding 20px
 
+.btn
+  btn()
+  btn-small()
+  btn-gray()
+
 @keyframes flicker-border
   from
     border-color transparentify(white, 0.4)
@@ -48,3 +53,41 @@
     animation-name flicker-border
     animation-duration 1.4s
     animation-direction alternate
+
+.cards
+  display flex
+  justify-content space-between
+
+danger()
+  background-color rgba(219, 55, 55, 0.25)
+
+  h1
+  h2
+  h3
+  h4
+    color #f55656
+
+.Card
+  width calc(50% - 5px)
+  padding 10px
+  background #273042
+  box-shadow 0 0 0 1px rgba(16, 22, 26, 0.4)
+  border 1px solid #111
+  tween all 0.1s ease-out
+
+  .btn
+    display block
+    width 100%
+    margin-bottom 10px
+
+  h2
+  h3
+  h4
+    margin-top 0
+    margin-bottom 10px
+    font-weight 300
+    color header-green
+
+
+  &.ohNo
+    danger()
