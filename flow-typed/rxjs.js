@@ -201,7 +201,7 @@ declare class rxjs$Observable<+T> {
 
   // Alias for `mergeMap`
   flatMap<U>(
-    project: (value: T) => rxjs$Observable<U> | Promise<U> | Iterable<U>
+    project: (value: T, i: number) => rxjs$Observable<U> | Promise<U> | Iterable<U>
   ): rxjs$Observable<U>;
 
   switchMap<U>(
@@ -221,7 +221,7 @@ declare class rxjs$Observable<+T> {
   mergeAll<U>(): rxjs$Observable<U>;
 
   mergeMap<U>(
-    project: (value: T, index?: number) => rxjs$Observable<U> | Promise<U> | Iterable<U>,
+    project: (value: T, index: number) => rxjs$Observable<U> | Promise<U> | Iterable<U>,
   ): rxjs$Observable<U>;
 
   multicast(
