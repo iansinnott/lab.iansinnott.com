@@ -86,6 +86,9 @@ success()
   border 1px solid #111
   tween all 0.1s ease-out
 
+  &.full
+    width 100%
+
   .btn
     display block
     width 100%
@@ -99,8 +102,12 @@ success()
     font-weight 300
     color header-green
 
-
   &.ohNo
     danger()
   &.ohYes
     success()
+
+.value
+  code
+    ellipses()
+

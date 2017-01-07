@@ -80,7 +80,7 @@ class YouTubeSearch extends React.Component {
 
   render() {
     return (
-      <Card>
+      <Card className={cx('full')}>
         <div className={cx('search')}>
           <input
             type='search'
