@@ -1,8 +1,10 @@
+/* @flow */
 import React from 'react';
 import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
 import { curry, path } from 'ramda';
 import { Subject } from 'rxjs';
+import type { Subscription, Observable } from 'rxjs';
 import createDebugger from 'debug';
 
 const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no-unused-vars
@@ -28,7 +30,27 @@ const url = term => querystring({
   key: 'xxxx',
 }, 'https://www.googleapis.com/youtube/v3/search');
 
-export default class Fp extends React.Component {
+class Card extends React.Component {
+  props: {
+    className?: string,
+    children?: React.Element<*>,
+  };
+
+  render() {
+    const { className, ...props } = this.props;
+    return (
+      <div className={cx('Card', className)} {...props}>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+class YouTubeSearch extends React.Component {
+  state: { query: string };
+  queries: Observable<Object>;
+  sub: Subscription;
+
   constructor(props) {
     super(props);
 
@@ -57,12 +79,8 @@ export default class Fp extends React.Component {
 
   render() {
     return (
-      <div className={cx('page')}>
-        <div className={cx('siteTitle')}>
-          <FpSigil />
-        </div>
-        <p>Welcome to the Fp page...</p>
-        <div className='search'>
+      <Card>
+        <div className={cx('search')}>
           <input
             type='search'
             placeholder='Search...'
@@ -70,6 +88,22 @@ export default class Fp extends React.Component {
             onChange={this.handleChange}
           />
         </div>
+      </Card>
+    );
+  }
+}
+
+export default class Fp extends React.Component {
+  render() {
+    return (
+      <div className={cx('page')}>
+        <div className={cx('siteTitle')}>
+          <FpSigil />
+        </div>
+        <p>Welcome to the Fp page...</p>
+        <section className={cx('cards')}>
+          <YouTubeSearch />
+        </section>
       </div>
     );
   }
