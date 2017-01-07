@@ -28,7 +28,7 @@ type CreateTween = (options: {
   duration: number,
   interval?: number,
   ease?: (t: number) => number,
-}) => Observable;
+}) => Observable<number>;
 
 const createTween: CreateTween = ({
   from,

@@ -4,7 +4,7 @@ import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
 import { curry, path } from 'ramda';
 import { Subject } from 'rxjs';
-import type { Subscription, Observable } from 'rxjs';
+import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
 
 const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no-unused-vars
@@ -48,7 +48,7 @@ class Card extends React.Component {
 
 class YouTubeSearch extends React.Component {
   state: { query: string };
-  queries: Observable<Object>;
+  queries: Subject<Object>;
   sub: Subscription;
 
   constructor(props) {
@@ -58,13 +58,14 @@ class YouTubeSearch extends React.Component {
       query: '',
     };
 
-    this.queries = new Subject()
+    this.queries = new Subject();
+
+    this.sub = this.queries
       .map(path(['target', 'value']))
       .do(query => this.setState({ query }))
       .map(url)
-      .do(x => debug('queried', x));
-
-    this.sub = this.queries.subscribe();
+      .do(x => debug('queried', x))
+      .subscribe();
   }
 
   componentWillUnmount() {
