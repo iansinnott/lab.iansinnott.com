@@ -2,7 +2,7 @@
 import React from 'react';
 import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
-import { curry, path } from 'ramda';
+import { concat, compose, toString, curry, path, tryCatch, always, identity } from 'ramda';
 import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
@@ -11,6 +11,7 @@ const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no
 
 import s from './Fp.styl';
 const cx = classnames.bind(s);
+import { Maybe, IO, Left, Right } from './types.js';
 
 const FpSigil = () => (
   <div className={cx('FpSigil')}>λ</div>
@@ -82,6 +83,7 @@ class YouTubeSearch extends React.Component {
     return (
       <Card className={cx('full')}>
         <div className={cx('search')}>
+          <i className='fa fa-search'></i>
           <input
             type='search'
             placeholder='Search...'
@@ -91,30 +93,6 @@ class YouTubeSearch extends React.Component {
         </div>
       </Card>
     );
-  }
-}
-
-class Maybe {
-  static of = (x) => new Maybe(x);
-
-  constructor(x) {
-    this.value = x;
-  }
-
-  isNothing() {
-    return this.value === null || this.value === undefined;
-  }
-
-  map(f) {
-    if (this.isNothing()) {
-      return Maybe.of(null);
-    } else {
-      return Maybe.of(f(this.value));
-    }
-  }
-
-  toString() {
-    return `Maybe(${this.isNothing() ? 'null' : this.value.toString()})`;
   }
 }
 
@@ -211,6 +189,36 @@ class ThrowableRandom extends React.Component {
   }
 }
 
+class IOThrowableRandom extends React.Component {
+  state = {
+    value: '0',
+  };
+
+  randomize = () => {
+    const io = IO.of(throwableRandom).map(toString);
+
+    const getValue = tryCatch(io.runIO, compose(concat('Caught - '), toString));
+
+    this.setState({ value: getValue() });
+  }
+
+  render() {
+    const { value } = this.state;
+
+    return (
+      <Card className={cx({ ohYes: (/Error/gi).test(value) })}>
+        <h4><code>IO</code>Throwable Random</h4>
+        <button onClick={this.randomize} className={cx('btn')}>
+          Randomize!
+        </button>
+        <div className={cx('value')}>
+          <code>{value.toString()}</code>
+        </div>
+      </Card>
+    );
+  }
+}
+
 export default class Fp extends React.Component {
   render() {
     return (
@@ -224,6 +232,7 @@ export default class Fp extends React.Component {
           <NullableRandom />
           <MaybeNullableRandom />
           <ThrowableRandom />
+          <IOThrowableRandom />
         </section>
       </div>
     );
