@@ -2,7 +2,7 @@
 import React from 'react';
 import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
-import { concat, compose, toString, curry, path, tryCatch, always, identity } from 'ramda';
+import { concat, compose, toString, curry, path, always, identity } from 'ramda';
 import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
@@ -11,7 +11,7 @@ const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no
 
 import s from './Fp.styl';
 const cx = classnames.bind(s);
-import { Maybe, IO, Left, Right } from './types.js';
+import { Maybe, IO, Left, Right, tryCatch } from './types.js';
 
 const FpSigil = () => (
   <div className={cx('FpSigil')}>λ</div>
@@ -129,11 +129,11 @@ window.Maybe = Maybe;
 
 class MaybeNullableRandom extends React.Component {
   state = {
-    value: Maybe.of(0),
+    value: Maybe(0),
   };
 
   randomize = () => {
-    this.setState({ value: Maybe.of(nullableRandom()) });
+    this.setState({ value: Maybe(nullableRandom()) });
   }
 
   render() {
@@ -195,11 +195,14 @@ class IOThrowableRandom extends React.Component {
   };
 
   randomize = () => {
-    const io = IO.of(throwableRandom).map(toString);
+    const value = tryCatch(throwableRandom)
+      .map(toString)
+      .fold(
+        err => `Caught! ${err.toString()}`,
+        x => x
+      );
 
-    const getValue = tryCatch(io.runIO, compose(concat('Caught - '), toString));
-
-    this.setState({ value: getValue() });
+    this.setState({ value });
   }
 
   render() {

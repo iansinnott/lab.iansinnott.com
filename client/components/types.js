@@ -1,67 +1,36 @@
 /* @flow */
 import { compose } from 'ramda';
 
-export class Maybe {
-  static of = (x) => new Maybe(x);
+const isNothing = (x) => (x === null || x === undefined);
 
-  value: any;
+export const Maybe = (x: any) => ({
+  map: (f: Function) => Maybe(f(x)),
+  fold: (f: Function) => f(x),
+  isNothing: () => isNothing(x),
+  toString: () => `Maybe(${x ? x.toString() : 'null'})`,
+});
 
-  constructor(x: any) {
-    this.value = x;
+export const Right = (x: any) => ({
+  map: (f: Function) => Right(f(x)),
+  chain: (f: (a: any) => Right) => f(x),
+  fold: (f: Function, g: Function) => g(x),
+  toString: () => `Right(${x})`,
+});
+
+export const Left = (x: any) => ({
+  map: (f: Function) => Left(x),
+  chain: (f: Function) => Left(x),
+  fold: (f: Function, g: Function) => f(x),
+  toString: () => `Left(${x})`,
+});
+
+export const tryCatch = (f: Function) => {
+  try {
+    return Right(f());
+  } catch (err) {
+    return Left(err);
   }
-
-  isNothing() {
-    return this.value === null || this.value === undefined;
-  }
-
-  map(f: Function) {
-    if (this.isNothing()) {
-      return Maybe.of(null);
-    } else {
-      return Maybe.of(f(this.value));
-    }
-  }
-
-  toString() {
-    return `Maybe(${this.isNothing() ? 'null' : this.value.toString()})`;
-  }
-}
-
-export class Left {
-  static of = x => new Left(x);
-
-  value: any;
-
-  constructor(x: any) {
-    this.value = x;
-  }
-
-  map(f: Function) {
-    return this;
-  }
-
-  toString() {
-    return `Left(${this.value})`;
-  }
-}
-
-export class Right {
-  static of = (x) => new Right(x);
-
-  value: any;
-
-  constructor(x: any) {
-    this.value = x;
-  }
-
-  map(f: Function) {
-    return Right.of(f(this.value));
-  }
-
-  toString() {
-    return `Right(${this.value})`;
-  }
-}
+};
 
 export class IO {
   static of = (f) => new IO(f);
