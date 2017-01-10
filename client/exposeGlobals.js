@@ -6,9 +6,9 @@
  */
 export default function exposeGlobals(_global: Object) {
   Object.assign(_global, {
-    _: require('ramda'),
+    R: require('ramda'),
+    Rx: require('rxjs'),
     d3: require('d3'),
-    rx: require('rxjs'),
     debug: require('debug'),
     utils: {
       createTweenObservable: require('./utils/createTweenObservable.js'),

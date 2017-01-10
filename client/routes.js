@@ -4,7 +4,7 @@ import { Route, IndexRoute } from 'react-router';
 
 import { App, About, Home, NotFound } from './components/App.js';
 import Playground from './components/SvgPlayground.js';
-import Fp from './components/Fp.js';
+import Fp from './components/FpExamples.js';
 import AlgIndex from './components/algs/AlgIndex.js';
 import QuickSort from './components/algs/QuickSort.js';
 

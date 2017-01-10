@@ -2,16 +2,23 @@
 import React from 'react';
 import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
-import { concat, compose, toString, curry, path, always, identity } from 'ramda';
+import {
+  concat,
+  compose,
+  toString,
+  curry,
+  path,
+  identity,
+} from 'ramda';
 import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
 
 const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no-unused-vars
 
-import s from './Fp.styl';
+import s from './FpExamples.styl';
 const cx = classnames.bind(s);
-import { Maybe, IO, Left, Right, tryCatch } from './types.js';
+import { Maybe, IO, Either } from '../fp';
 
 const FpSigil = () => (
   <div className={cx('FpSigil')}>λ</div>
@@ -125,8 +132,6 @@ class NullableRandom extends React.Component {
   }
 }
 
-window.Maybe = Maybe;
-
 class MaybeNullableRandom extends React.Component {
   state = {
     value: Maybe(0),
@@ -195,12 +200,11 @@ class IOThrowableRandom extends React.Component {
   };
 
   randomize = () => {
-    const value = tryCatch(throwableRandom)
-      .map(toString)
-      .fold(
-        err => `Caught! ${err.toString()}`,
-        x => x
-      );
+    const io = IO(throwableRandom).map(toString);
+    const value = Either.either(
+      compose(concat('Caught! '), toString),
+      identity,
+    )(io);
 
     this.setState({ value });
   }
@@ -210,7 +214,7 @@ class IOThrowableRandom extends React.Component {
 
     return (
       <Card className={cx({ ohYes: (/Error/gi).test(value) })}>
-        <h4><code>IO</code>Throwable Random</h4>
+        <h4><code>IO</code> Throwable Random</h4>
         <button onClick={this.randomize} className={cx('btn')}>
           Randomize!
         </button>
