@@ -11,9 +11,10 @@ import { curry } from 'ramda';
  * import * as Either form './path/to/Either
  */
 
-import { isNothing } from './maybe.js';
+import { isNothing } from './Maybe.js';
 
 export const Right = (x: any) => ({
+  of: (x: any) => Right(x),
   map: (f: Function) => Right(f(x)),
   chain: (f: (a: any) => Right) => f(x),
   fold: (f: Function, g: Function) => g(x),
@@ -21,6 +22,7 @@ export const Right = (x: any) => ({
 });
 
 export const Left = (x: any) => ({
+  of: (x: any) => Left(x),
   map: (f: Function) => Left(x),
   chain: (f: Function) => Left(x),
   fold: (f: Function, g: Function) => f(x),

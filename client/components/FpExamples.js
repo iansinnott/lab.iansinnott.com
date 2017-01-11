@@ -3,6 +3,18 @@ import React from 'react';
 import classnames from 'classnames/bind';
 import { stringify } from 'querystring';
 import {
+  __,
+  toPairs,
+  complement,
+  prop,
+  reduce,
+  gt,
+  toUpper,
+  test,
+  tail,
+  allPass,
+  head,
+  map,
   concat,
   compose,
   toString,
@@ -13,6 +25,9 @@ import {
 import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
+
+const capitalize = (str) =>
+  concat(toUpper(head(str)), tail(str));
 
 const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no-unused-vars
 
@@ -211,9 +226,10 @@ class IOThrowableRandom extends React.Component {
 
   render() {
     const { value } = this.state;
+    const hasError = test(/Error/gi);
 
     return (
-      <Card className={cx({ ohYes: (/Error/gi).test(value) })}>
+      <Card className={cx({ ohYes: hasError(value) })}>
         <h4><code>IO</code> Throwable Random</h4>
         <button onClick={this.randomize} className={cx('btn')}>
           Randomize!
@@ -221,6 +237,99 @@ class IOThrowableRandom extends React.Component {
         <div className={cx('value')}>
           <code>{value.toString()}</code>
         </div>
+      </Card>
+    );
+  }
+}
+
+type InputProps = {
+  key: string,
+  value: string,
+  onChange: (e: SyntheticKeyboardEvent) => void,
+  error: boolean,
+};
+const Input = (props: InputProps) => (
+  <input
+    key={props.key}
+    className={cx({ error: props.error })}
+    placeholder={capitalize(props.key)}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
+
+class ValidationForm extends React.Component {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    errors: [],
+  };
+
+  /**
+   * This sort of works, but I'm still not super pleased with it. For instance,
+   * where are the error messages? Where should I even store thos? I wrote it
+   * this way to try to figure out what the big win of using a Validation type
+   * might by.
+   *
+   * Currently it simply puts the key of any validation-offending state into the
+   * return array.
+   */
+  validate = (e) => {
+    e.preventDefault();
+
+    const username = allPass([
+      complement(test(/^(0|[1-9][0-9]*)$/)), // Not only digits
+      compose(gt(__, 6) ,prop('length')),
+    ]);
+
+    const email = test(
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    // Greater than 10 chars
+    const password = compose(gt(__, 10), prop('length'));
+
+    const validations = {
+      username,
+      email,
+      password,
+    };
+
+    const runValidations = reduce((errs, [ key, predicate ]) => {
+      if (!predicate(this.state[key])) errs.push(key);
+      return errs;
+    }, []);
+
+    const errors = runValidations(toPairs(validations));
+
+    this.setState({ errors });
+  };
+
+  onChange = curry((k, e) => {
+    this.setState({ [k]: e.target.value });
+  });
+
+  renderField = compose(Input, (k) => ({
+    key: k,
+    value: this.state[k],
+    onChange: this.onChange(k),
+    error: this.state.errors.includes(k),
+  }));
+
+  render() {
+    const fields = ['username', 'email', 'password'];
+    return (
+      <Card>
+        <h4>Form Validation</h4>
+        <form className={cx('form')} onSubmit={this.validate}>
+          {map(this.renderField, fields)}
+          <button
+            type='submit'
+            className={cx('btn')}>
+            Validate
+          </button>
+        </form>
       </Card>
     );
   }
@@ -240,6 +349,7 @@ export default class Fp extends React.Component {
           <MaybeNullableRandom />
           <ThrowableRandom />
           <IOThrowableRandom />
+          <ValidationForm />
         </section>
       </div>
     );
