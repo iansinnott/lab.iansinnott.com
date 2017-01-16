@@ -121,3 +121,18 @@ success()
 
 .search
   search-box()
+
+alert()
+  padding 3px 5px
+  font-size 14px
+  &:not(:last-child)
+    margin-bottom 10px
+
+.alertError
+  alert()
+  danger()
+  border-left 2px solid #f55656
+
+.alertSuccess
+  alert()
+  success()

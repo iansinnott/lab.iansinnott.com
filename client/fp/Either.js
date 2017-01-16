@@ -13,6 +13,13 @@ import { curry } from 'ramda';
 
 import { isNothing } from './Maybe.js';
 
+// Might use this in cases where I can't yet decide what to call something
+function aliasMethod(method: string) {
+  return function (...args: any) {
+    return this[method](...args);
+  };
+}
+
 export const Right = (x: any) => ({
   of: (x: any) => Right(x),
   map: (f: Function) => Right(f(x)),

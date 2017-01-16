@@ -16,11 +16,14 @@ import {
   head,
   map,
   concat,
+  always,
   compose,
   toString,
   curry,
+  curryN,
   path,
   identity,
+  addIndex,
 } from 'ramda';
 import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
@@ -33,7 +36,7 @@ const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no
 
 import s from './FpExamples.styl';
 const cx = classnames.bind(s);
-import { Maybe, IO, Either } from '../fp';
+import { Maybe, IO, Either, Validation } from '../fp';
 
 const FpSigil = () => (
   <div className={cx('FpSigil')}>λ</div>
@@ -335,6 +338,100 @@ class ValidationForm extends React.Component {
   }
 }
 
+class MonadicValidationForm extends React.Component {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    errors: [],
+  };
+
+  /**
+   * This sort of works, but I'm still not super pleased with it. For instance,
+   * where are the error messages? Where should I even store thos? I wrote it
+   * this way to try to figure out what the big win of using a Validation type
+   * might by.
+   *
+   * Currently it simply puts the key of any validation-offending state into the
+   * return array.
+   */
+  validate = (e) => {
+    e.preventDefault();
+
+    const username = allPass([
+      complement(test(/^(0|[1-9][0-9]*)$/)), // Not only digits
+      compose(gt(__, 6), prop('length')),
+    ]);
+
+    const email = test(
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    // Greater than 10 chars
+    const password = compose(gt(__, 10), prop('length'));
+
+    const usernameValid = x => username(x)
+      ? Validation.Success(x)
+      : Validation.Failure(['Please provide a valid username']);
+
+    const emailValid = x => email(x)
+      ? Validation.Success(x)
+      : Validation.Failure(['Please provide a valid email']);
+
+    const passwordValid = x => password(x)
+      ? Validation.Success(x)
+      : Validation.Failure(['Please provide a valid password']);
+
+    const isValid = (un, em, pw) =>
+      Validation.Success(curryN(3, always(true)))
+        .ap(usernameValid(un))
+        .ap(emailValid(em))
+        .ap(passwordValid(pw));
+
+    const { state } = this;
+    isValid(state.username, state.email, state.password)
+      .fold(
+        (errors) => this.setState({ errors }),
+        (x) => this.setState({ errors: [] }),
+      );
+  };
+
+  onChange = curry((k, e) => {
+    this.setState({ [k]: e.target.value });
+  });
+
+  renderField = compose(Input, (k) => ({
+    key: k,
+    value: this.state[k],
+    onChange: this.onChange(k),
+    error: this.state.errors.includes(k),
+  }));
+
+  renderErrors = compose(
+    addIndex(map)((msg, i) => (
+      <div key={i} className={cx('alertError')}>{msg}</div>
+    )),
+  );
+
+  render() {
+    const fields = ['username', 'email', 'password'];
+    return (
+      <Card>
+        <h4>Monadic Form Validation</h4>
+        <form className={cx('form')} onSubmit={this.validate}>
+          {map(this.renderField, fields)}
+          <button
+            type='submit'
+            className={cx('btn')}>
+            Validate
+          </button>
+          {this.renderErrors(this.state.errors)}
+        </form>
+      </Card>
+    );
+  }
+}
+
 export default class Fp extends React.Component {
   render() {
     return (
@@ -350,6 +447,7 @@ export default class Fp extends React.Component {
           <ThrowableRandom />
           <IOThrowableRandom />
           <ValidationForm />
+          <MonadicValidationForm />
         </section>
       </div>
     );
