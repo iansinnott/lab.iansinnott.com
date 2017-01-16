@@ -9,6 +9,7 @@ import {
   prop,
   reduce,
   gt,
+  isEmpty,
   toUpper,
   test,
   tail,
@@ -17,6 +18,7 @@ import {
   map,
   concat,
   always,
+  groupBy,
   compose,
   toString,
   curry,
@@ -271,6 +273,32 @@ const renderErrors = compose(
   )),
 );
 
+const safeRenderErrors = compose(
+  Either.either(always(null), renderErrors),
+  Either.fromNullable,
+);
+
+type FancyInputProps = {
+  key: string,
+  value: string,
+  onChange: (e: SyntheticKeyboardEvent) => void,
+  errors?: Array<string>,
+};
+const FancyInput = (props: FancyInputProps) => {
+  console.log(props);
+  return (
+    <div key={props.key} className={cx('FancyInput')}>
+      <input
+        className={cx({ error: props.errors && props.errors.length })}
+        placeholder={capitalize(props.key)}
+        value={props.value}
+        onChange={props.onChange}
+      />
+      {safeRenderErrors(props.errors)}
+    </div>
+  );
+};
+
 class ValidationForm extends React.Component {
   state = {
     username: '',
@@ -382,15 +410,15 @@ class MonadicValidationForm extends React.Component {
 
     const usernameValid = x => username(x)
       ? Validation.Success(x)
-      : Validation.Failure(['Please provide a valid username']);
+      : Validation.Failure.of('Please provide a valid username');
 
     const emailValid = x => email(x)
       ? Validation.Success(x)
-      : Validation.Failure(['Please provide a valid email']);
+      : Validation.Failure.of('Please provide a valid email');
 
     const passwordValid = x => password(x)
       ? Validation.Success(x)
-      : Validation.Failure(['Please provide a valid password']);
+      : Validation.Failure.of('Please provide a valid password');
 
     const isValid = (un, em, pw) =>
       Validation.Success(curryN(3, always(true)))
@@ -441,7 +469,17 @@ class FullValidationForm extends React.Component {
     username: '',
     email: '',
     password: '',
-    errors: [],
+    errors: {
+      username: [],
+      email: [],
+      password: [],
+    },
+  };
+
+  resetErrors = () => {
+    this.setState({
+      errors: map(always([]), this.state.errors),
+    });
   };
 
   /**
@@ -490,7 +528,7 @@ class FullValidationForm extends React.Component {
     const containsSpecialChars = test(/[!@#\$%\^\&*\)\(+=._-]+/);
 
     const isPasswordValid = x =>
-      Success(curryN(2, always(true)))
+      Success(curryN(3, always(true)))
         .ap(longerThan10(x)
           ? Success(x)
           : Failure.of({
@@ -516,14 +554,20 @@ class FullValidationForm extends React.Component {
         .ap(isEmailValid(em))
         .ap(isPasswordValid(pw));
 
-    const { state } = this;
-    isValid(state.username, state.email, state.password)
+    // Helper for turning [{ key: 'blah', message: '...' }]
+    // into { blah: ['...'] }
+    const messagesByKey = compose(
+      map(map(prop('message'))), // Map once for the object, and again for the array values
+      x => (debug(x), x),
+      groupBy(prop('key')),
+    );
+
+    const { username, email, password } = this.state;
+
+    isValid(username, email, password)
       .fold(
-        (errors) => {
-          console.log('ERORR', errors);
-          this.setState({ errors: map(prop('message'), errors) }); // TODO
-        },
-        (x) => this.setState({ errors: [] }),
+        (errors) => this.setState({ errors: messagesByKey(errors) }),
+        this.resetErrors
       );
   };
 
@@ -531,12 +575,15 @@ class FullValidationForm extends React.Component {
     this.setState({ [k]: e.target.value });
   });
 
-  renderField = compose(Input, (k) => ({
-    key: k,
-    value: this.state[k],
-    onChange: this.onChange(k),
-    error: this.state.errors.includes(k),
-  }));
+  renderField = compose(
+    FancyInput,
+    (k) => ({
+      key: k,
+      value: this.state[k],
+      onChange: this.onChange(k),
+      errors: this.state.errors[k],
+    })
+  );
 
   render() {
     const fields = ['username', 'email', 'password'];
@@ -550,7 +597,6 @@ class FullValidationForm extends React.Component {
             className={cx('btn')}>
             Validate
           </button>
-          {renderErrors(this.state.errors)}
         </form>
       </Card>
     );
