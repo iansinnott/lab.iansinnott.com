@@ -13,6 +13,7 @@ export default function exposeGlobals(_global: Object) {
     Rx: require('rxjs'),
     d3: require('d3'),
     debug: require('debug'),
+    fp: require('./fp'),
     utils: {
       createTweenObservable: require('./utils/createTweenObservable.js'),
     },

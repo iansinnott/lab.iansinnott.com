@@ -29,6 +29,8 @@ import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
 
+const EMAIL_RE = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const capitalize = (str) =>
   concat(toUpper(head(str)), tail(str));
 
@@ -36,7 +38,9 @@ const debug = createDebugger('alg-viz:components:Fp'); // eslint-disable-line no
 
 import s from './FpExamples.styl';
 const cx = classnames.bind(s);
-import { Maybe, IO, Either, Validation } from '../fp';
+import { Maybe, IO, Either, Validation } from '../../fp';
+
+const { Success, Failure } = Validation;
 
 const FpSigil = () => (
   <div className={cx('FpSigil')}>λ</div>
@@ -261,6 +265,12 @@ const Input = (props: InputProps) => (
   />
 );
 
+const renderErrors = compose(
+  addIndex(map)((msg, i) => (
+    <div key={i} className={cx('alertError')}>{msg}</div>
+  )),
+);
+
 class ValidationForm extends React.Component {
   state = {
     username: '',
@@ -407,12 +417,6 @@ class MonadicValidationForm extends React.Component {
     error: this.state.errors.includes(k),
   }));
 
-  renderErrors = compose(
-    addIndex(map)((msg, i) => (
-      <div key={i} className={cx('alertError')}>{msg}</div>
-    )),
-  );
-
   render() {
     const fields = ['username', 'email', 'password'];
     return (
@@ -425,7 +429,128 @@ class MonadicValidationForm extends React.Component {
             className={cx('btn')}>
             Validate
           </button>
-          {this.renderErrors(this.state.errors)}
+          {renderErrors(this.state.errors)}
+        </form>
+      </Card>
+    );
+  }
+}
+
+class FullValidationForm extends React.Component {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    errors: [],
+  };
+
+  /**
+   * This sort of works, but I'm still not super pleased with it. For instance,
+   * where are the error messages? Where should I even store thos? I wrote it
+   * this way to try to figure out what the big win of using a Validation type
+   * might by.
+   *
+   * Currently it simply puts the key of any validation-offending state into the
+   * return array.
+   */
+  validate = (e) => {
+    e.preventDefault();
+
+    const notJustNumeric = complement(test(/^(0|[1-9][0-9]*)$/));
+
+    // Just for a quick test
+    const longerThan6 = compose(gt(__, 6), prop('length'));
+
+    const isUsernameValid = (x) =>
+      Success(curryN(2, always(true)))
+        .ap(longerThan6(x)
+          ? Success(x)
+          : Failure.of({
+            key: 'username',
+            message: 'Username must be longer than 6',
+          }))
+        .ap(notJustNumeric(x)
+          ? Success(x)
+          : Failure.of({
+            key: 'username',
+            message: 'Username must not just be numbers',
+          }));
+
+    const isEmailValid = x =>
+      test(EMAIL_RE, x)
+        ? Success(x)
+        : Failure.of({
+          key: 'email',
+          message: 'Email must be valid',
+        });
+
+    // Greater than 10 chars
+    const longerThan10 = compose(gt(__, 10), prop('length'));
+    const containsDigits = test(/\d/);
+    const containsSpecialChars = test(/[!@#\$%\^\&*\)\(+=._-]+/);
+
+    const isPasswordValid = x =>
+      Success(curryN(2, always(true)))
+        .ap(longerThan10(x)
+          ? Success(x)
+          : Failure.of({
+            key: 'password',
+            message: 'Password must be longer than 10 characters',
+          }))
+        .ap(containsDigits(x)
+          ? Success(x)
+          : Failure.of({
+            key: 'password',
+            message: 'Password must contain at least one digit',
+          }))
+        .ap(containsSpecialChars(x)
+          ? Success(x)
+          : Failure.of({
+            key: 'password',
+            message: 'Password must contain at least one special character ',
+          }));
+
+    const isValid = (un, em, pw) =>
+      Success(curryN(3, always(true)))
+        .ap(isUsernameValid(un))
+        .ap(isEmailValid(em))
+        .ap(isPasswordValid(pw));
+
+    const { state } = this;
+    isValid(state.username, state.email, state.password)
+      .fold(
+        (errors) => {
+          console.log('ERORR', errors);
+          this.setState({ errors: map(prop('message'), errors) }); // TODO
+        },
+        (x) => this.setState({ errors: [] }),
+      );
+  };
+
+  onChange = curry((k, e) => {
+    this.setState({ [k]: e.target.value });
+  });
+
+  renderField = compose(Input, (k) => ({
+    key: k,
+    value: this.state[k],
+    onChange: this.onChange(k),
+    error: this.state.errors.includes(k),
+  }));
+
+  render() {
+    const fields = ['username', 'email', 'password'];
+    return (
+      <Card className={cx('full')}>
+        <h4>Full Validation Example</h4>
+        <form className={cx('form')} onSubmit={this.validate}>
+          {map(this.renderField, fields)}
+          <button
+            type='submit'
+            className={cx('btn')}>
+            Validate
+          </button>
+          {renderErrors(this.state.errors)}
         </form>
       </Card>
     );
@@ -448,6 +573,7 @@ export default class Fp extends React.Component {
           <IOThrowableRandom />
           <ValidationForm />
           <MonadicValidationForm />
+          <FullValidationForm />
         </section>
       </div>
     );
