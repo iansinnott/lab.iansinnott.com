@@ -20,8 +20,38 @@ const debug = createDebugger('app:components:FormValidation'); // eslint-disable
 import s from './FpExamples.styl';
 const cx = classnames.bind(s);
 import { Validation } from '../../fp';
-const { Success, Failure } = Validation;
+const { validate, combineValidations } = Validation;
 import { EMAIL_RE, Card, FancyInput } from './FpExamples.js';
+
+/**
+ * Our validations. These functions are very similar to predicates (they take a
+ * predicate as the first arg) but instead of true or false they return
+ * Validation.Success or Validation.Failure
+ */
+const notJustNumeric = validate(complement(test(/^(0|[1-9][0-9]*)$/)), {
+  key: 'username',
+  message: 'Username must not just be numbers',
+});
+const longerThan6 = validate(compose(gt(__, 6), prop('length')), {
+  key: 'username',
+  message: 'Username must be longer than 6',
+});
+const longerThan10 = validate(compose(gt(__, 10), prop('length')), {
+  key: 'password',
+  message: 'Password must be longer than 10 characters',
+});
+const containsDigits = validate(test(/\d/), {
+  key: 'password',
+  message: 'Password must contain at least one digit',
+});
+const containsSpecialChars = validate(test(/[!@#\$%\^\&*\)\(+=._-]+/), {
+  key: 'password',
+  message: 'Password must contain at least one special character ',
+});
+const isValidEmail = validate(test(EMAIL_RE), {
+  key: 'email',
+  message: 'Email must be valid',
+});
 
 class ValidationForm extends React.Component {
   state = {
@@ -53,55 +83,24 @@ class ValidationForm extends React.Component {
   validate = (e) => {
     e.preventDefault();
 
-    const notJustNumeric = complement(test(/^(0|[1-9][0-9]*)$/));
-
-    // Just for a quick test
-    const longerThan6 = compose(gt(__, 6), prop('length'));
-
-    const isUsernameValid = (x) => Validation.combineValidations(
-      longerThan6(x) ? Success(x) : Failure.of({
-        key: 'username',
-        message: 'Username must be longer than 6',
-      }),
-      notJustNumeric(x) ? Success(x) : Failure.of({
-        key: 'username',
-        message: 'Username must not just be numbers',
-      }),
+    const isUsernameValid = (x) => combineValidations(
+      notJustNumeric(x),
+      longerThan6(x),
     );
 
-    const isEmailValid = x =>
-      test(EMAIL_RE, x)
-        ? Success(x)
-        : Failure.of({
-          key: 'email',
-          message: 'Email must be valid',
-        });
-
-    // Greater than 10 chars
-    const longerThan10 = compose(gt(__, 10), prop('length'));
-    const containsDigits = test(/\d/);
-    const containsSpecialChars = test(/[!@#\$%\^\&*\)\(+=._-]+/);
-
-    const isPasswordValid = x => Validation.combineValidations(
-      longerThan10(x) ? Success(x) : Failure.of({
-        key: 'password',
-        message: 'Password must be longer than 10 characters',
-      }),
-      containsDigits(x) ? Success(x) : Failure.of({
-        key: 'password',
-        message: 'Password must contain at least one digit',
-      }),
-      containsSpecialChars(x) ? Success(x) : Failure.of({
-        key: 'password',
-        message: 'Password must contain at least one special character ',
-      }),
+    const isPasswordValid = x => combineValidations(
+      longerThan10(x),
+      containsDigits(x),
+      containsSpecialChars(x),
     );
 
-    const isValid = (un, em, pw) => Validation.combineValidations(
+    const isValid = (un, em, pw) => combineValidations(
       isUsernameValid(un),
-      isEmailValid(em),
+      isValidEmail(em), // NOTE: We used this validation directly, see above
       isPasswordValid(pw),
     );
+
+    const { username, email, password } = this.state;
 
     // Helper for turning [{ key: 'blah', message: '...' }]
     // into { blah: ['...'] }
@@ -110,8 +109,7 @@ class ValidationForm extends React.Component {
       groupBy(prop('key')),
     );
 
-    const { username, email, password } = this.state;
-
+    // Run it
     isValid(username, email, password)
       .fold(
         (errors) => this.setState({ errors: messagesByKey(errors) }),

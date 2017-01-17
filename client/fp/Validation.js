@@ -7,7 +7,7 @@
  *
  * @flow weak
  */
-import { curryN, always } from 'ramda';
+import { curry, curryN, T } from 'ramda';
 
 import { isNothing } from './Maybe.js';
 
@@ -47,6 +47,21 @@ export const fromNullable = (x: any) => isNothing(x) ? Failure(x) : Success(x);
 export const successOr = (x: any) => (x) ? Success(x) : Failure(x);
 
 /**
+ * Given a predicate and a failure handler constructor a validation function
+ * (any -> Success | Failure) that can be used with combineValidations.
+ *
+ * NOTE: I decided not to strictly require a funciton for the failure cause. Any
+ * value can be provided, however, if the value is a function it will be called
+ * with `x`. It could turn out that this is not a great idea or not worth it
+ * simply to make the validation calls more concise, but for now the API is
+ * defined that way.
+ */
+export const validate = curry((predicate, f, x) => {
+  const failure = typeof f === 'function' ? f(x) : f;
+  return predicate(x) ? Success(x) : Failure.of(failure);
+});
+
+/**
  * An abstraction over constructing a curried applicative functor for use with
  * validations. Rationale: The fact that one has to curry a function by the
  * number of validtions present plus the fact that the return value of that
@@ -58,6 +73,6 @@ export const successOr = (x: any) => (x) ? Success(x) : Failure(x);
 export const combineValidations = (...args: Array<Success | Failure>): Success | Failure => {
   return args.reduce((agg, validation) => {
     return agg.ap(validation);
-  }, Success(curryN(args.length, always(true))));
+  }, Success(curryN(args.length, T)));
 };
 
