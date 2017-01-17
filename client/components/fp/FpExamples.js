@@ -31,7 +31,7 @@ import { Subject } from 'rxjs';
 import type { Subscription } from 'rxjs';
 import createDebugger from 'debug';
 
-const EMAIL_RE = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const EMAIL_RE = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const capitalize = (str) =>
   concat(toUpper(head(str)), tail(str));
@@ -62,7 +62,7 @@ const url = term => querystring({
   key: 'xxxx',
 }, 'https://www.googleapis.com/youtube/v3/search');
 
-class Card extends React.Component {
+export class Card extends React.Component {
   props: {
     className?: string,
     children?: React.Element<*>,
@@ -284,8 +284,7 @@ type FancyInputProps = {
   onChange: (e: SyntheticKeyboardEvent) => void,
   errors?: Array<string>,
 };
-const FancyInput = (props: FancyInputProps) => {
-  console.log(props);
+export const FancyInput = (props: FancyInputProps) => {
   return (
     <div key={props.key} className={cx('FancyInput')}>
       <input
@@ -500,7 +499,7 @@ class FullValidationForm extends React.Component {
     const longerThan6 = compose(gt(__, 6), prop('length'));
 
     const isUsernameValid = (x) =>
-      Success(curryN(2, always(true)))
+      Success(curryN(2, always(x)))
         .ap(longerThan6(x)
           ? Success(x)
           : Failure.of({
@@ -528,7 +527,7 @@ class FullValidationForm extends React.Component {
     const containsSpecialChars = test(/[!@#\$%\^\&*\)\(+=._-]+/);
 
     const isPasswordValid = x =>
-      Success(curryN(3, always(true)))
+      Success(curryN(3, always(x)))
         .ap(longerThan10(x)
           ? Success(x)
           : Failure.of({

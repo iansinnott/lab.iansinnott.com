@@ -5,6 +5,7 @@ import { Route, IndexRoute } from 'react-router';
 import { App, About, Home, NotFound } from './components/App.js';
 import Playground from './components/SvgPlayground.js';
 import Fp from './components/fp/FpExamples.js';
+import FormValidation from './components/fp/FormValidation.js';
 import AlgIndex from './components/algs/AlgIndex.js';
 import QuickSort from './components/algs/QuickSort.js';
 
@@ -25,6 +26,7 @@ export const routes = (
 
     <Route path='play' title={makeTitle('Playground')} component={Playground} />
     <Route path='fp' title={makeTitle('FUNctional Programming')} component={Fp} />
+    <Route path='form-validation' title={makeTitle('Form Validation')} component={FormValidation} />
 
     <Route path='about' title={makeTitle('About')} component={About} />
     <Route path='*' title='404: Not Found' component={NotFound} />

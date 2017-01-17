@@ -7,6 +7,8 @@
  *
  * @flow weak
  */
+import { curryN, always } from 'ramda';
+
 import { isNothing } from './Maybe.js';
 
 export const Success = (x: any) => ({
@@ -43,4 +45,19 @@ export const fromNullable = (x: any) => isNothing(x) ? Failure(x) : Success(x);
  * provide the Failure
  */
 export const successOr = (x: any) => (x) ? Success(x) : Failure(x);
+
+/**
+ * An abstraction over constructing a curried applicative functor for use with
+ * validations. Rationale: The fact that one has to curry a function by the
+ * number of validtions present plus the fact that the return value of that
+ * function doesn't really matter makes me see this as an implementation detail.
+ * In a real app I just want to construct my validations using Success/Failure
+ * and pass them to some function that will handle all the ap-ing and currying
+ * for me.
+ */
+export const combineValidations = (...args: Array<Success | Failure>): Success | Failure => {
+  return args.reduce((agg, validation) => {
+    return agg.ap(validation);
+  }, Success(curryN(args.length, always(true))));
+};
 

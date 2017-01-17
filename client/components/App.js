@@ -81,6 +81,7 @@ export class App extends React.Component {
           <NavLink to='/algs'>Algorithms</NavLink>
           <NavLink to='/play'>Play</NavLink>
           <NavLink style={{ textTransform: 'none' }} to='/fp'>λ</NavLink>
+          <NavLink to='/form-validation'>Form Validation</NavLink>
           <NavLink to='/about'>About</NavLink>
         </nav>
         <div className={cx('routeHandler')}>
