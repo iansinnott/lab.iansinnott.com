@@ -105,6 +105,46 @@ export class Box extends React.Component {
   }
 }
 
+export class GridBox extends React.Component {
+  static propTypes = {
+    children: React.PropTypes.node,
+    title: React.PropTypes.string.isRequired,
+    style: React.PropTypes.object,
+    hover: React.PropTypes.bool,
+  };
+
+  static defaultProps = {
+    width: '100%',
+    height: 200,
+    style: {},
+    hover: false,
+  }
+
+  render() {
+    const { hover } = this.props;
+    return (
+      <section className={cx('GridBox')}>
+        <h4>
+          {this.props.title}
+          {hover && (
+            <span className={cx('hoverBadge')}>
+              Hover
+            </span>
+          )}
+        </h4>
+        <div
+          style={{
+            position: 'relative',
+            backgroundImage: renderToDataUrl(<SvgGrid opacity={0.2} />),
+            ...this.props.style,
+          }}>
+          {this.props.children}
+        </div>
+      </section>
+    );
+  }
+}
+
 const renderEasingOptions = (easings) => {
   return Object.keys(easings).map(k => (
     <option key={k} value={k}>{k}</option>

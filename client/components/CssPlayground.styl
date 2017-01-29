@@ -1,0 +1,98 @@
+@require './vars.styl'
+
+.Playground
+  padding 20px
+
+box()
+  background header-green
+  width 200px
+  height @width
+
+.perspective
+  box()
+  position absolute
+  top 50%
+  left 50%
+  transform translate(-50%, -50%) perspective(500px) rotateY(0deg)
+  tween transform
+  &:hover
+
+    // Holy shit, note that the order is important here. Translate does not work
+    // as expected when used after perspective
+    transform translate(-50%, -50%) perspective(500px) rotateY(45deg)
+
+.multiPerspective
+  padding 20px
+  padding-bottom 0
+  display flex
+  flex-wrap wrap
+  justify-content space-between
+  perspective 800px
+  &:hover
+    .PerspectiveBox
+      transform rotateY(45deg)
+
+.PerspectiveBox
+  background header-green
+  width 30%
+  height 100px
+  margin-bottom 20px
+  transform rotateY(0deg)
+  tween transform
+
+.translateZ
+  box()
+  position absolute
+  top 50%
+  left 50%
+  transform translate(-50%, -50%)
+  background transparent
+  border 1px solid darken(white, 40%)
+  &:hover
+    .box
+      transform perspective(600px) translateZ(-260px) rotateZ(15deg)
+  .box
+    box()
+    position absolute
+    top -1px // Account for border
+    left @top
+    transform perspective(600px) translateZ(0px) rotateZ(0deg)
+    tween transform
+
+.flipContainer
+  position relative
+  width 200px
+  height 300px
+  perspective 800px
+  margin 0 auto
+  &:hover
+    .card
+      transform rotateY(180deg)
+
+  .front
+  .back
+    line-height @height
+
+.card
+  transform-style preserve-3d
+  transform rotateY(0deg)
+  tween transform
+  width 100%
+  height 100%
+
+  .front
+  .back
+    backface-visibility hidden
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    text-align center
+    font-size 70px
+
+  .front
+    background header-green
+  .back
+    background light-green
+    transform rotateY(180deg)

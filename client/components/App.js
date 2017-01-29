@@ -78,8 +78,9 @@ export class App extends React.Component {
       <div className={cx('App')}>
         <nav className={cx('nav')}>
           <IndexNavLink to='/'>Home</IndexNavLink>
-          <NavLink to='/algs'>Algorithms</NavLink>
-          <NavLink to='/play'>Play</NavLink>
+          <NavLink to='/algs'>Algs</NavLink>
+          <NavLink to='/svg'>SVG</NavLink>
+          <NavLink to='/css'>CSS</NavLink>
           <NavLink style={{ textTransform: 'none' }} to='/fp'>λ</NavLink>
           <NavLink to='/form-validation'>Form Validation</NavLink>
           <NavLink to='/about'>About</NavLink>

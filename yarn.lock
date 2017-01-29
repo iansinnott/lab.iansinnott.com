@@ -101,9 +101,9 @@ anymatch@^1.3.0:
     arrify "^1.0.0"
     micromatch "^2.1.5"
 
-app-time@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/app-time/-/app-time-0.5.1.tgz#0853646465d33b83f7763be146fa0c8a3f32d986"
+app-time@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/app-time/-/app-time-0.7.2.tgz#e87daedfbbd1de142ce9f8c566659f60e812dca5"
   dependencies:
     autoprefixer "^6.6.0"
     babel-core "^6.21.0"
@@ -131,7 +131,7 @@ app-time@0.5.1:
     stylus "^0.54.5"
     stylus-loader "^2.4.0"
     url-loader "^0.5.7"
-    webpack beta
+    webpack "^2.2.0"
     webpack-bundle-analyzer "^2.2.1"
     webpack-dashboard "^0.2.1"
     webpack-dev-middleware "^1.9.0"
@@ -2896,7 +2896,7 @@ is-plain-obj@^1.0.0:
 
 is-posix-bracket@^0.1.0:
   version "0.1.1"
-  resolved "http://registry.npmjs.org/is-posix-bracket/-/is-posix-bracket-0.1.1.tgz#3334dc79774368e92f016e6fbc0a88f5cd6e6bc4"
+  resolved "https://registry.yarnpkg.com/is-posix-bracket/-/is-posix-bracket-0.1.1.tgz#3334dc79774368e92f016e6fbc0a88f5cd6e6bc4"
 
 is-primitive@^2.0.0:
   version "2.0.0"
@@ -4974,7 +4974,7 @@ webpack-sources@^0.1.0, webpack-sources@^0.1.4:
     source-list-map "~0.1.7"
     source-map "~0.5.3"
 
-webpack@beta:
+webpack@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-2.2.0.tgz#09246336b5581c9002353f75bcadb598a648f977"
   dependencies:
