@@ -1,12 +1,14 @@
 /* @flow */
 import React from 'react';
 import classnames from 'classnames/bind';
-import { range } from 'd3';
 import { map } from 'ramda';
+import { range, scaleOrdinal, schemeCategory10 } from 'd3';
 
 import s from './CssPlayground.styl';
 const cx = classnames.bind(s);
 import { GridBox } from './Svg.js';
+
+const color = scaleOrdinal(schemeCategory10);
 
 const PerspectiveBox = (props) => (
   <div className={cx('PerspectiveBox')} />
@@ -70,6 +72,23 @@ export default class Playground extends React.Component {
             </div>
           </div>
         </GridBox>
+
+        <GridBox title='Cube' hover style={{ padding: 20 }}>
+          <div className={cx('cubeContainer')}>
+            <div className={cx('cube')}>
+              {['front', 'back', 'right', 'left', 'top', 'bottom']
+               .map((face, i) => (
+                 <div
+                   key={face}
+                   className={cx('face', face)}
+                   style={{ backgroundColor: color(face) }}>
+                   {i + 1}
+                 </div>
+              ))}
+            </div>
+          </div>
+        </GridBox>
+
       </div>
     );
   }
