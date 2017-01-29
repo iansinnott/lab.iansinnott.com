@@ -35,13 +35,37 @@ export default class Playground extends React.Component {
           </div>
         </GridBox>
 
-        <GridBox title='Card Flip' hover style={{
-          perspective: 800,
-          padding: 20,
-        }}>
+        <GridBox title='Card Flip' hover style={{ padding: 20 }}>
           <div className={cx('flipContainer')}>
             <div className={cx('card')}>
               <div className={cx('front')}>1</div>
+              <div className={cx('back')}>2</div>
+            </div>
+          </div>
+        </GridBox>
+
+        <GridBox title='transform-origin' hover style={{ padding: 20 }}>
+          <div className={cx('flipContainer', 'multi')}>
+            <div className={cx('card', 'rightCenter')}>
+              <div className={cx('front')}>
+                1
+                <pre>
+                  transform-origin: right center{'\n'}
+                  transform: translateX(-100%) rotateY(180deg)
+                </pre>
+              </div>
+              <div className={cx('back')}>2</div>
+            </div>
+          </div>
+          <div className={cx('flipContainer', 'multi')}>
+            <div className={cx('card', 'leftCenter')}>
+              <div className={cx('front')}>
+                1
+                <pre>
+                  transform-origin: left center{'\n'}
+                  transform: translateX(100%) rotateY(180deg)
+                </pre>
+              </div>
               <div className={cx('back')}>2</div>
             </div>
           </div>

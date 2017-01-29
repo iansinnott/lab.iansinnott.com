@@ -69,6 +69,20 @@ box()
     .card
       transform rotateY(180deg)
 
+    .rightCenter
+      transform translateX(-100%) rotateY(180deg)
+
+    .leftCenter
+      transform translateX(100%) rotateY(180deg)
+
+  &.multi
+    display inline-block
+    margin 0
+    width 300px
+    height 400px
+    &:not(:last-child)
+      margin-right 20px
+
   .front
   .back
     line-height @height
@@ -91,8 +105,23 @@ box()
     text-align center
     font-size 70px
 
+    pre
+      text-align left
+      position absolute
+      top 20%
+      left 50%
+      transform translateX(-50%)
+      font-size 11px
+      line-height 11px
+
   .front
     background header-green
   .back
     background light-green
     transform rotateY(180deg)
+
+.rightCenter
+  transform-origin right center
+
+.leftCenter
+  transform-origin left center
