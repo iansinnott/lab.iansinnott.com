@@ -131,10 +131,36 @@ box()
   perspective 1000px
   width 200px
   height @width
-  background palegreen
+  margin 0 auto
 
   .cube
-    background thistle
     width 100%
     height @width
+    transform-style preserve-3d
+    tween all // NOTE: Since we update on mousemove we don't need tween but it makes it smoother
+
+  .face
+    position absolute
+    margin 0
+    width 200px
+    height @width
+    border 2px solid header-green
+    line-height @width
+    text-align center
+    font-size 70px
+    tween all
+    opacity .6
+
+  .front
+    transform rotateY(0deg) translateZ((@width / 2))
+  .back
+    transform rotateY(180deg) translateZ((@width / 2))
+  .right
+    transform rotateY(90deg) translateZ((@width / 2))
+  .left
+    transform rotateY(-90deg) translateZ((@width / 2))
+  .top
+    transform rotateX(90deg) translateZ((@width / 2))
+  .bottom
+    transform rotateX(-90deg) translateZ((@width / 2))
 

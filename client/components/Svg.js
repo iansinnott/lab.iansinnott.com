@@ -2,6 +2,7 @@
 import React from 'react';
 import * as easings from 'd3-ease';
 import type { Subscription } from 'rxjs';
+import { compose, test, filter, pickAll } from 'ramda';
 
 import { renderToDataUrl } from '../utils/svgHelpers.js';
 import createTweenObservable from '../utils/createTweenObservable.js';
@@ -9,6 +10,22 @@ import classnames from 'classnames/bind';
 
 import s from './Svg.styl';
 const cx = classnames.bind(s);
+
+const isHandler = test(/^on(.+)/);
+
+/**
+ * Build a picker that will grab all handlers from props
+ */
+const pickAllHandlers = compose(pickAll, filter(isHandler), Object.keys);
+
+/**
+ * Given an object of props, pick all the props that are handlers. I.e. all
+ * props that start with 'on'. Example:
+ *
+ * const props = { children: [...], onClick: () => {...} }
+ * getHandlers(props); // => { onClick: () => {...} }
+ */
+const getHandlers = (props) => pickAllHandlers(props)(props);
 
 /**
  * Create an SVG with the appropriate namespace attached
@@ -120,8 +137,15 @@ export class GridBox extends React.Component {
     hover: false,
   }
 
+  innerDiv: Element;
+
+  // This is ugly, but dom measurement and manipulation outside of React usually
+  // is so we're going with it for now.
+  getInnerDiv = () => this.innerDiv;
+
   render() {
-    const { hover } = this.props;
+    const { hover, style } = this.props;
+    const handlers = getHandlers(this.props);
     return (
       <section className={cx('GridBox')}>
         <h4>
@@ -133,10 +157,12 @@ export class GridBox extends React.Component {
           )}
         </h4>
         <div
+          ref={el => (this.innerDiv = el)}
+          {...handlers}
           style={{
             position: 'relative',
             backgroundImage: renderToDataUrl(<SvgGrid opacity={0.2} />),
-            ...this.props.style,
+            ...style,
           }}>
           {this.props.children}
         </div>
