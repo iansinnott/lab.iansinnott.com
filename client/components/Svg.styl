@@ -58,3 +58,56 @@
 
 .control
   margin-left 10px
+
+.slider
+  position relative
+  display flex
+  align-items center
+  width 100%
+  max-width 300px
+  cursor pointer
+
+  .input
+    width 100%
+    margin 0
+    position relative
+    z-index 2
+    appearance none
+    outline none
+    background transparent
+    display inline-block
+
+    // Hide the track. I use an abs div behind the element
+    &::-webkit-slider-runnable-track
+    &::-moz-range-track
+    &::-ms-track
+      background transparent
+
+    // The draggable part of the slider
+    &::-webkit-slider-thumb
+    &::-moz-range-thumb
+    &::-ms-thumb
+      appearance none
+      border 1px solid #000000
+      height 36px
+      width 16px
+      border-radius 3px
+      background #ffffff
+      cursor pointer
+      margin-top -14px /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      box-shadow 1px 1px 1px #000000, 0px 0px 1px #0d0d0d
+
+  .track
+    position absolute
+    top 50%
+    transform translateY(-50%)
+    left 0
+    right 0
+    height 5px
+    background linear-gradient(to right, darken(header-green, 20%), #ffeb3b)
+    z-index 1
+    border-radius 3px
+
+.gridBoxControls
+  display flex
+  align-items center

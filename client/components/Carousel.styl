@@ -1,0 +1,50 @@
+@require './vars.styl'
+
+.carouselContainer
+  position relative
+  perspective 1000px
+  display block
+  height 140px
+  width 210px
+  margin 0 auto // horiz center
+  tween()
+
+.carousel
+  width 100%
+  height 100%
+  position absolute
+  transform-style preserve-3d
+  tween()
+
+// NOTE: This outputs a bunch of lines like this
+//
+// &:nth-child(1)
+//   transform rotateY(...deg) translateZ(...px)
+//
+// NOTE: See this post for where the translateZ value comes from:
+// https://desandro.github.io/3dtransforms/docs/carousel.html
+// Basically it invovles a tan calculation. Stylus has a native tan function
+// so we could calculate this value directly given any dimensions pretty
+// easily
+.face
+  position absolute
+  top 10px
+  left @top
+  height calc(100% - 20px)
+  width calc(100% - 20px)
+  border 1px solid // color is provided inline
+  tween()
+
+  // See NOTE
+  for i in (1..9)
+    &:nth-child({i})
+      transform unquote('rotateY(' + ((i - 1) * 40) + 'deg) translateZ(288px)')
+
+  .inner
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%, -50%)
+    display block
+    font-size 50px
+

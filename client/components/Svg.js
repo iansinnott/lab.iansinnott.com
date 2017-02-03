@@ -128,6 +128,9 @@ export class GridBox extends React.Component {
     title: React.PropTypes.string.isRequired,
     style: React.PropTypes.object,
     hover: React.PropTypes.bool,
+    slider: React.PropTypes.bool,
+    sliderValue: React.PropTypes.number,
+    onChange: React.PropTypes.func,
   };
 
   static defaultProps = {
@@ -135,6 +138,8 @@ export class GridBox extends React.Component {
     height: 200,
     style: {},
     hover: false,
+    sliderValue: 0,
+    slider: false,
   }
 
   innerDiv: Element;
@@ -144,18 +149,35 @@ export class GridBox extends React.Component {
   getInnerDiv = () => this.innerDiv;
 
   render() {
-    const { hover, style } = this.props;
+    const { hover, slider, sliderValue, onChange, style } = this.props;
     const handlers = getHandlers(this.props);
     return (
       <section className={cx('GridBox')}>
-        <h4>
-          {this.props.title}
+        <div className={cx('gridBoxControls')}>
+          <h4>{this.props.title}</h4>
           {hover && (
             <span className={cx('hoverBadge')}>
               Hover
             </span>
           )}
-        </h4>
+          {slider && [
+            <span key={0} style={{ marginRight: 10 }} className={cx('hoverBadge')}>
+              Slider
+            </span>,
+            <div key={1} className={cx('slider')}>
+              <div className={cx('track')} />
+              <input
+                key={1}
+                type='range'
+                value={sliderValue}
+                onChange={onChange}
+                min={0}
+                max={8}
+                className={cx('input')}
+              />
+            </div>
+          ]}
+        </div>
         <div
           ref={el => (this.innerDiv = el)}
           {...handlers}
