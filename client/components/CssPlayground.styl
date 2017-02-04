@@ -1,10 +1,11 @@
 @require './vars.styl'
 
-.Playground
+.CssPlayground
   padding 20px
 
 box()
-  background header-green
+  background transparentify(header-green, 0.6)
+  border 1px solid header-green
   width 200px
   height @width
 
@@ -33,7 +34,8 @@ box()
       transform rotateY(45deg)
 
 .PerspectiveBox
-  background header-green
+  background transparentify(header-green, 0.6)
+  border 1px solid header-green
   width 30%
   height 100px
   margin-bottom 20px

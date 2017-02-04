@@ -5,6 +5,7 @@ import { Route, IndexRoute } from 'react-router';
 import { App, About, Home, NotFound } from './components/App.js';
 import SvgPlayground from './components/SvgPlayground.js';
 import CssPlayground from './components/CssPlayground.js';
+import Playground from './components/Playground.js';
 import Fp from './components/fp/FpExamples.js';
 import FormValidation from './components/fp/FormValidation.js';
 import AlgIndex from './components/algs/AlgIndex.js';
@@ -24,10 +25,10 @@ export const routes = (
         component={QuickSort}
       />
     </Route>
-
-    <Route path='svg' title={makeTitle('SVG Playground')} component={SvgPlayground} />
-    <Route path='css' title={makeTitle('CSS Playground')} component={CssPlayground} />
     <Route path='fp' title={makeTitle('FUNctional Programming')} component={Fp} />
+    <Route path='css' title={makeTitle('CSS Playground')} component={CssPlayground} />
+    <Route path='svg' title={makeTitle('SVG Playground')} component={SvgPlayground} />
+    <Route path='playground' title={makeTitle('Playground')} component={Playground} />
     <Route path='form-validation' title={makeTitle('Form Validation')} component={FormValidation} />
 
     <Route path='about' title={makeTitle('About')} component={About} />

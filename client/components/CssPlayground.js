@@ -20,7 +20,7 @@ const PerspectiveBox = (i) => (
 export default class CssPlayground extends React.Component {
   render() {
     return (
-      <div className={cx('Playground')}>
+      <div className={cx('CssPlayground')}>
         <h1>CSS Playground</h1>
 
         <GridBox title='Perspective' hover style={{ height: 300 }}>
