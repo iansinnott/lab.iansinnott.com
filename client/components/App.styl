@@ -69,7 +69,7 @@ code
     color #c4cbd9
     margin-bottom 20px
 
-.nav
+.Nav
   background #324244
   padding-left 20px
   flex-grow 0
@@ -77,6 +77,8 @@ code
   box-shadow 0px 6px 15px rgba(0,0,0,0.1)
 
   a
+    position relative
+    vertical-align top
     display inline-block
     padding 15px
     text-transform uppercase
@@ -89,9 +91,46 @@ code
     &:hover
       color white
 
+      .tooltip
+        opacity 1
+        transform translate(-50%, 0px)
+        pointer-events auto
+
+
+    .tooltip
+      text-transform none
+      position absolute
+      display block
+      padding 10px
+      background-color #30404d
+      color inherit
+      top 120%
+      left 50%
+      transform translate(-50%, 10px)
+      border-radius 3px
+      tween(opacity transform, .2s)
+      opacity 0
+      pointer-events none
+      &:after
+        content ''
+        display block
+        position absolute
+        background transparent
+        border 6px solid transparent
+        border-bottom 6px solid @background-color
+        top 0
+        left 50%
+        transform translate(-50%, -100%)
+
+
   .active
     background #00695c
     color white
+
+  .hasImage
+    padding 10px
+    img
+      max-height 24px
 
 .routeHandler
   flex 1 100%

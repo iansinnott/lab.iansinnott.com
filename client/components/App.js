@@ -10,6 +10,8 @@ import logo from './react-logo.png';
 
 // Favicon link is in the template, this just makes webpack package it up for us
 import './favicon.ico';
+import cssLogo from './css-logo.svg';
+import svgLogo from './svg-logo.svg';
 
 const NavLink = props => (
   <Link activeClassName={cx('active')} {...props} />
@@ -64,6 +66,35 @@ export class NotFound extends React.Component {
   }
 }
 
+class Nav extends React.Component {
+  render() {
+    return (
+      <nav className={cx('Nav')}>
+        <IndexNavLink to='/'>Home</IndexNavLink>
+        <NavLink to='/algs'>
+          Algs
+          <span className={cx('tooltip')}>Algorithms</span>
+        </NavLink>
+        <NavLink style={{ textTransform: 'none' }} to='/fp'>
+          λ
+          <span className={cx('tooltip')}>Functional Programming</span>
+        </NavLink>
+        <NavLink to='/css' className={cx('hasImage')}>
+          <img src={cssLogo} alt='CSS Logo' />
+          <span className={cx('tooltip')}>CSS</span>
+        </NavLink>
+        <NavLink to='/svg' className={cx('hasImage')}>
+          <img src={svgLogo} alt='CSS Logo' />
+          <span className={cx('tooltip')}>SVG</span>
+        </NavLink>
+        <NavLink to='/playground'>Playground</NavLink>
+        <NavLink to='/form-validation'>Form Validation</NavLink>
+        <NavLink to='/about'>About</NavLink>
+      </nav>
+    );
+  }
+}
+
 /**
  * NOTE: As of 2015-11-09 react-transform does not support a functional
  * component as the base compoenent that's passed to ReactDOM.render, so we
@@ -76,15 +107,7 @@ export class App extends React.Component {
   render() {
     return (
       <div className={cx('App')}>
-        <nav className={cx('nav')}>
-          <IndexNavLink to='/'>Home</IndexNavLink>
-          <NavLink to='/algs'>Algs</NavLink>
-          <NavLink to='/svg'>SVG</NavLink>
-          <NavLink to='/css'>CSS</NavLink>
-          <NavLink style={{ textTransform: 'none' }} to='/fp'>λ</NavLink>
-          <NavLink to='/form-validation'>Form Validation</NavLink>
-          <NavLink to='/about'>About</NavLink>
-        </nav>
+        <Nav />
         <div className={cx('routeHandler')}>
           {this.props.children}
         </div>
