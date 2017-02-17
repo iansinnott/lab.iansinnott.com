@@ -2,3 +2,126 @@
 
 .Playground
   padding 20px
+
+@keyframes orbit
+  from
+    transform rotate3d(0,0,1,0deg)
+  to
+    transform rotate3d(0,0,1,360deg)
+
+@keyframes orbit2
+  from
+    transform rotate3d(0,0,1,-30deg)
+  to
+    transform rotate3d(0,0,1,330deg)
+
+@keyframes orbit3
+  from
+    transform rotate3d(0,0,1,-60deg)
+  to
+    transform rotate3d(0,0,1,280deg)
+
+@keyframes reverse-orbit
+  from
+    transform translate(-50%,-50%) rotate3d(0,0,1,0deg)
+  to
+    transform translate(-50%,-50%) rotate3d(0,0,1,-360deg)
+
+
+.RxDbLogo
+  margin 0 auto
+  display table // Size to content
+
+.Cylinder
+  perspective 800px
+  position relative
+  &:nth-child(1)
+    z-index 3
+    .cylinder
+      animation-name orbit
+  &:nth-child(2)
+    margin-top -20px
+    z-index 2
+    .cylinder
+      animation-name orbit2
+  &:nth-child(3)
+    margin-top -20px
+    z-index 1
+    .cylinder
+      animation-name orbit3
+
+.cylinderContainer
+  transform-style preserve-3d
+  position absolute
+  top 0
+  left 0
+  transform-origin top center
+
+  &:nth-child(1)
+    transform translateZ(0px) rotate3d(1,0,0,70deg)
+  &:nth-child(2)
+    transform translateZ(-50px) rotate3d(1,0,0,70deg)
+  &:nth-child(3)
+    transform translateZ(-100px) rotate3d(1,0,0,70deg)
+
+dot()
+  position absolute
+  top 0
+  left 50%
+  transform translate(-50%,-50%)
+  width 4px
+  height @width
+  background #FF174C
+  box-shadow 0 0 15px 4px #FF0084
+
+@keyframes down-dot
+  from
+    transform translateY(0px)
+  to
+    transform translateY(300px)
+
+.line
+  background transparentify(#FF174C, 0.6)
+  width 1px
+  height 300px
+  position absolute
+  top 50%
+  left 50%
+  transform translate(-50%, -50%)
+  &:after
+    content ''
+    dot()
+    animation-name down-dot
+    animation-duration 5s
+    animation-iteration-count infinite
+    animation-timing-function linear
+
+.cylinder
+  width 100%
+  height @width
+  background rgba(16, 16, 16, 0.35)
+  border 1px solid #FF174C
+  border-radius 50%
+  position relative
+  animation-duration 5s
+  animation-iteration-count infinite
+  animation-timing-function linear
+  tween(all, 0.2s)
+  &:hover
+    background transparentify(#FF174C, 0.5)
+
+  img
+    display block
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%,-50%)
+    animation-name reverse-orbit
+    animation-duration 5s
+    animation-iteration-count infinite
+    animation-timing-function linear
+    width 70px
+    height @width
+
+.dot
+  dot()
