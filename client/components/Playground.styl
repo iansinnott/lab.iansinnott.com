@@ -75,10 +75,16 @@ dot()
   box-shadow 0 0 15px 4px #FF0084
 
 @keyframes down-dot
-  from
+  0%
     transform translateY(0px)
-  to
+    opacity 0
+  6%
+    opacity 1
+  94%
+    opacity 1
+  100%
     transform translateY(300px)
+    opacity 0
 
 .line
   background transparentify(#FF174C, 0.6)
@@ -89,8 +95,8 @@ dot()
   left 50%
   transform translate(-50%, -50%)
   &:after
-    content ''
     dot()
+    content ''
     animation-name down-dot
     animation-duration 5s
     animation-iteration-count infinite
