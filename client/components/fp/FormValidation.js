@@ -152,7 +152,7 @@ class ValidationForm extends React.Component {
 export default class FormValidation extends React.Component {
   render() {
     return (
-      <div className={cx('page')}>
+      <div style={{ maxWidth: 800 }} className={cx('page')}>
         <div className={cx('siteTitle')}>
           <h1>Form Validation</h1>
         </div>

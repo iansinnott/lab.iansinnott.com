@@ -2,7 +2,7 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
-import { App, About, Home, NotFound } from './components/App.js';
+import { App, Home, NotFound } from './components/App.js';
 import SvgPlayground from './components/SvgPlayground.js';
 import CssPlayground from './components/CssPlayground.js';
 import Playground from './components/Playground.js';
@@ -31,7 +31,6 @@ export const routes = (
     <Route path='playground' title={makeTitle('Playground')} component={Playground} />
     <Route path='form-validation' title={makeTitle('Form Validation')} component={FormValidation} />
 
-    <Route path='about' title={makeTitle('About')} component={About} />
     <Route path='*' title='404: Not Found' component={NotFound} />
   </Route>
 );

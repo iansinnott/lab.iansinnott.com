@@ -168,7 +168,7 @@ export default class QuickSort extends React.Component {
   render() {
     return (
       <div className={cx('QuickSort', 'page')}>
-        <h1>QuickSort</h1>
+        <h1 style={{ textAlign: 'center' }}>QuickSort</h1>
         <div className={cx('controls')}>
           <button className={cx('btn')} onClick={this.reset}>Reset</button>
           <button className={cx('btn')} onClick={this.start}>Start</button>

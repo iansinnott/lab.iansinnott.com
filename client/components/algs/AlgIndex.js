@@ -11,6 +11,7 @@ export default class AlgIndex extends React.Component {
     return (
       <div className={cx('AlgIndex', 'page')}>
         <h1>Here be algs</h1>
+        <p>(But actually just one, because I never got around to coding up more...)</p>
 
         <div className={cx('list')}>
           <Link to='/algs/quick-sort'>Quick Sort</Link>

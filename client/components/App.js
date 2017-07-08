@@ -27,25 +27,38 @@ export class Home extends React.Component {
       <div className={cx('page')}>
         <div className={cx('siteTitle')}>
           <img src={logo} alt='React Logo' />
-          <h1>Alg Viz</h1>
+          <h1>Lab</h1>
         </div>
-        <p>A project to visually explain practical programming algorithms.</p>
-        <Link to='/algs' className={cx('cta')}>
-          View Algorithms
+        <p>Where I run experiments and learn by doing.</p>
+        <p>
+          This project was initially created to help visualize algorithms. I
+          only ever got through quick-sort though, so that didn't really pan
+          out. But I then started using this to play around with CSS animations
+          and SVG. Then functional programming. Then some random stuff like{' '}
+          <Link to='/playground'>creating a logo for RxDB</Link>.
+        </p>
+        <p>
+          Now this is a place where I put anything. It's a good repo for testing
+          out web tech and putting it online quickly.
+        </p>
+        <Link to='/css' className={cx('cta')}>
+          CSS Fun
         </Link>
-      </div>
-    );
-  }
-}
-
-export class About extends React.Component {
-  render() {
-    return (
-      <div className={cx('page')}>
-        <div className={cx('siteTitle')}>
-          <h1>About Page</h1>
-        </div>
-        <p>Welcome to the about page...</p>
+        <Link to='/svg' className={cx('cta')}>
+          SVG Fun
+        </Link>
+        <Link to='/fp' className={cx('cta')}>
+          Functional Programming
+        </Link>
+        <Link to='/form-validation' className={cx('cta')}>
+          Form Validation
+        </Link>
+        <Link to='/playground' className={cx('cta')}>
+          Misc
+        </Link>
+        <Link to='/algs' className={cx('cta')}>
+          Algorithms
+        </Link>
       </div>
     );
   }
@@ -71,14 +84,6 @@ class Nav extends React.Component {
     return (
       <nav className={cx('Nav')}>
         <IndexNavLink to='/'>Home</IndexNavLink>
-        <NavLink to='/algs'>
-          Algs
-          <span className={cx('tooltip')}>Algorithms</span>
-        </NavLink>
-        <NavLink style={{ textTransform: 'none' }} to='/fp'>
-          λ
-          <span className={cx('tooltip')}>Functional Programming</span>
-        </NavLink>
         <NavLink to='/css' className={cx('hasImage')}>
           <img src={cssLogo} alt='CSS Logo' />
           <span className={cx('tooltip')}>CSS</span>
@@ -87,9 +92,16 @@ class Nav extends React.Component {
           <img src={svgLogo} alt='CSS Logo' />
           <span className={cx('tooltip')}>SVG</span>
         </NavLink>
+        <NavLink style={{ textTransform: 'none' }} to='/fp'>
+          λ
+          <span className={cx('tooltip')}>Functional Programming</span>
+        </NavLink>
         <NavLink to='/playground'>Playground</NavLink>
         <NavLink to='/form-validation'>Form Validation</NavLink>
-        <NavLink to='/about'>About</NavLink>
+        <NavLink to='/algs'>
+          Algs
+          <span className={cx('tooltip')}>Algorithms</span>
+        </NavLink>
       </nav>
     );
   }
