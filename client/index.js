@@ -10,6 +10,11 @@ if (process.env.NODE_ENV === 'development') {
   exposeGlobals(window);
 }
 
+browserHistory.listen(({ pathname, search }) => {
+  window.ga('set', 'page', pathname + search);
+  window.ga('send', 'pageview');
+});
+
 render((
   <Router routes={routes} history={browserHistory} />
 ), document.getElementById('root'));

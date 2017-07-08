@@ -23,7 +23,8 @@
     "eslint-config-zen": "^2.0.0",
     "eslint-plugin-flowtype": "^2.29.1",
     "eslint-plugin-react": "^6.8.0",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "surge": "^0.19.0"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -65,6 +66,7 @@
     "postinstall": "app-time setup",
     "prebuild": "rimraf build",
     "build": "app-time build",
+    "deploy": "surge ./build lab.iansinnott.com",
     "lint": "eslint client",
     "conf": "node ./scripts/generate-nginx-conf.js",
     "test": "echo 'No tests specified.'",
