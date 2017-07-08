@@ -167,6 +167,9 @@ export default class FormValidation extends React.Component {
           in the UI. We still need to know what validation errors have occurred
           at any given time.
         </p>
+        <p>
+          <a href='https://github.com/iansinnott/lab.iansinnott.com/blob/master/client/components/fp/FormValidation.js'>View source code</a>
+        </p>
         <section className={cx('cards')}>
           <ValidationForm />
         </section>

@@ -78,7 +78,7 @@ export default class Playground extends React.Component {
     return (
       <div className={cx('Playground')}>
         <h1>Playground</h1>
-        <p>So much going on here!</p>
+        <p>Random stuff goes here.</p>
 
         <GridBox
           title='RxDB Logo Concept'

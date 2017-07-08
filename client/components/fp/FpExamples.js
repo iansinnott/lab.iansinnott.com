@@ -610,6 +610,9 @@ export default class Fp extends React.Component {
           <FpSigil />
         </div>
         <p>Welcome to the Fp page...</p>
+        <p>The examples here are pretty cool, but the real fun is in the code.{' '}
+          <a href='https://github.com/iansinnott/lab.iansinnott.com/blob/master/client/components/fp/FpExamples.js'>Check out the repo.</a>
+        </p>
         <section className={cx('cards')}>
           <YouTubeSearch />
           <NullableRandom />

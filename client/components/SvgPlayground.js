@@ -36,7 +36,7 @@ export default class Playground extends React.Component {
   render() {
     return (
       <div className={cx('Playground')}>
-        <h1>Playground</h1>
+        <h1>SVG Playground</h1>
 
         <Box title='rect'>
           <rect
